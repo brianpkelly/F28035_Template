@@ -76,8 +76,8 @@ void adcinit()
 
 void readADC()
 {
-	//AdcRegs.ADCSOCFRC1.all = 0xFFFF; 	//all socs
-	AdcRegs.ADCSOCFRC1.all = 0xFE7F; 		//not 7 and 8
+	AdcRegs.ADCSOCFRC1.all = 0xFFFF; 	//all socs
+	//AdcRegs.ADCSOCFRC1.all = 0xFE7F; 		//not 7 and 8
 
     while(AdcRegs.ADCINTFLG.bit.ADCINT1 == 0){}  //Wait for ADCINT1
     AdcRegs.ADCINTFLGCLR.bit.ADCINT1 = 1;
