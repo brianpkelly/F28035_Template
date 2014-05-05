@@ -220,7 +220,14 @@ void FillSendCAN(unsigned Mbox)
 
 void SendCAN(unsigned int Mbox)
 {
-	mask = 1 << Mbox;
+	// Check for bus off
+	ECanaShadow.CANMC.all = ECanaRegs.CANMC.all;
+	if (ECanaShadow.CANMC.bit.CCR == 1)
+	{
+		BUS_OFF();
+	}
+	// 1UL so there's a mask for at least 32 mailboxes
+	mask = 1UL << Mbox;
 	ECanaRegs.CANTRS.all = mask;
 
 	//todo Nathan: calibrate sendcan stopwatch
@@ -248,6 +255,25 @@ void FillCANData()
 	FillCAN(GP_BUTTON_BOX);
 }
 
+void BUS_OFF()
+{
+    EALLOW;
+    ECanaShadow.CANMC.all = ECanaRegs.CANMC.all;
+
+
+    ECanaShadow.CANMC.bit.CCR = 0;
+    ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+
+    ECanaShadow.CANES.all = ECanaRegs.CANES.all;
+    while (ECanaShadow.CANES.bit.CCE != 0)
+    {
+        ECanaShadow.CANES.all = ECanaRegs.CANES.all;
+    }
+
+    EDIS;
+}
+
+
 // INT9.6
 __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
 {
@@ -269,11 +295,11 @@ __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
 		{
 		case OPS_ID_STATE:
 			memcpy(&ops.State,&dummy,sizeof ops.State);
-			ops.Change.bit.State = 1;
+			//ops.Change.bit.State = 1;
 			break;
 		case OPS_ID_STOPWATCHERROR:
 			memcpy(&ops.Flags.all,&dummy,sizeof ops.Flags.all);
-			ops.Change.bit.Flags = 1;
+			//ops.Change.bit.Flags = 1;
 			break;
 		}
 		ECanaRegs.CANRMP.bit.RMP0 = 1;
@@ -283,4 +309,3 @@ __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
   	//To receive more interrupts from this PIE group, acknowledge this interrupt
   	PieCtrlRegs.PIEACK.all = PIEACK_GROUP9;
 }
-

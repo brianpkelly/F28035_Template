@@ -11,7 +11,7 @@
 typedef struct StopWatch
 {
 	Uint32 Start;
-	unsigned int Time;
+	unsigned long Time;
 }stopwatch_struct;
 
 void StopWatchSetUp(float time);

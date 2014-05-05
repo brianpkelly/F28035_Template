@@ -8,7 +8,7 @@
 #include "all.h"
 
 
-ops_struct ops_temp;
+ops_struct ops_temp, sc_start_ops;
 data_struct data_temp;
 stopwatch_struct* conv_watch;
 
@@ -54,8 +54,8 @@ void LatchStruct()
 
 void SensorCovMeasure()
 {
+	memcpy(&sc_start_ops, &ops, sizeof(struct OPERATIONS));
 	StopWatchRestart(conv_watch);
-
 	//todo USER: Sensor Conversion
 	//update data_temp and ops_temp
 	//use stopwatch to catch timeouts
@@ -108,8 +108,6 @@ void SensorCovMeasure()
 	{
 		CLEAR12V();
 	}
-
-
 }
 
 void UpdateStruct()
@@ -122,18 +120,20 @@ void UpdateStruct()
 	//if ops is not changed outside of sensor conversion copy temp over, otherwise don't change
 
 	//Change bit is only set by ops changes outside of SensorCov.
-	if (ops.Change.bit.State == 0)
+	//if (ops.Change.bit.State == 0)
+	if(sc_start_ops.State == ops.State)
 	{
 		ops.State = ops_temp.State;
 	}
 
-	if (ops.Change.bit.Flags == 0)
+	//if (ops.Change.bit.Flags == 0)
+	if(sc_start_ops.Flags.all == ops.Flags.all)
 	{
 		//only cov error happens inside of conversion so all other changes are considered correct.
 		//update accordingly to correct cov_errors
 		ops.Flags.bit.cov_error = ops_temp.Flags.bit.cov_error;
 	}
-	ops.Change.all = 0;	//clear change states
+	//ops.Change.all = 0;	//clear change states
 }
 
 void SensorCovDeInit()
