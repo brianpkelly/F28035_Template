@@ -28,6 +28,7 @@ void SendCAN(unsigned int Mbox);
 void FillCANData();
 void FillSendCAN(unsigned int Mbox);
 void ClearMailBoxes();
+void BUS_OFF();
 
 //todo USER: DEFINE IDs and mailboxes for output
 #define COMMAND_ID 		0x1
