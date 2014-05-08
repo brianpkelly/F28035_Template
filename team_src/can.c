@@ -295,11 +295,9 @@ __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
 		{
 		case OPS_ID_STATE:
 			memcpy(&ops.State,&dummy,sizeof ops.State);
-			//ops.Change.bit.State = 1;
 			break;
 		case OPS_ID_STOPWATCHERROR:
 			memcpy(&ops.Flags.all,&dummy,sizeof ops.Flags.all);
-			//ops.Change.bit.Flags = 1;
 			break;
 		}
 		ECanaRegs.CANRMP.bit.RMP0 = 1;

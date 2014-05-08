@@ -39,11 +39,6 @@ typedef struct OPERATIONS
 	  long						all;
 	  flags_struct 				bit;
   }								Flags;
-  union CHANGE
-  {
-  	long 			all;
-  	change_struct 	bit;
-  }					Change;
 } ops_struct;
 
 
