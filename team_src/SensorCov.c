@@ -49,12 +49,11 @@ void LatchStruct()
 {
 	memcpy(&ops_temp, &ops, sizeof(struct OPERATIONS));
 	memcpy(&data_temp, &data, sizeof(struct DATA));
-	ops.Change.all = 0;	//clear change states
 }
 
 void SensorCovMeasure()
 {
-	memcpy(&sc_start_ops, &ops, sizeof(struct OPERATIONS));
+	memcpy(&sc_start_ops, &ops_temp, sizeof(struct OPERATIONS));
 	StopWatchRestart(conv_watch);
 	//todo USER: Sensor Conversion
 	//update data_temp and ops_temp
@@ -120,20 +119,17 @@ void UpdateStruct()
 	//if ops is not changed outside of sensor conversion copy temp over, otherwise don't change
 
 	//Change bit is only set by ops changes outside of SensorCov.
-	//if (ops.Change.bit.State == 0)
 	if(sc_start_ops.State == ops.State)
 	{
 		ops.State = ops_temp.State;
 	}
 
-	//if (ops.Change.bit.Flags == 0)
 	if(sc_start_ops.Flags.all == ops.Flags.all)
 	{
 		//only cov error happens inside of conversion so all other changes are considered correct.
 		//update accordingly to correct cov_errors
 		ops.Flags.bit.cov_error = ops_temp.Flags.bit.cov_error;
 	}
-	//ops.Change.all = 0;	//clear change states
 }
 
 void SensorCovDeInit()
