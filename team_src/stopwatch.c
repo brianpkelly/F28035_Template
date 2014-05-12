@@ -54,7 +54,7 @@ void StopWatchRestart(stopwatch_struct* watch)
 
 char isStopWatchComplete(stopwatch_struct* watch)
 {
-	if((StopWatch.InterruptCount - watch->Start) > watch->Time)
+	if((StopWatch.InterruptCount - watch->Start) >= watch->Time)
 	{
 		watch->StopwatchComplete = 1;
 	}
