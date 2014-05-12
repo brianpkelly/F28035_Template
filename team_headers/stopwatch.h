@@ -10,6 +10,7 @@
 
 typedef struct StopWatch
 {
+	Uint32 StopwatchComplete;
 	Uint32 Start;
 	unsigned long Time;
 }stopwatch_struct;

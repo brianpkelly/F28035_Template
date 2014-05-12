@@ -42,24 +42,23 @@ stopwatch_struct* StartStopWatch(unsigned int time)
 	stopwatch_struct* watch = (stopwatch_struct*)myMalloc(sizeof(stopwatch_struct));
 	watch->Start = StopWatch.InterruptCount;
 	watch->Time = time;
+	watch->StopwatchComplete = 0;
 	return watch;
 }
 
 void StopWatchRestart(stopwatch_struct* watch)
 {
 	watch->Start = StopWatch.InterruptCount;
+	watch->StopwatchComplete = 0;
 }
 
 char isStopWatchComplete(stopwatch_struct* watch)
 {
 	if((StopWatch.InterruptCount - watch->Start) > watch->Time)
 	{
-		return 1;
+		watch->StopwatchComplete = 1;
 	}
-	else
-	{
-		return 0;
-	}
+	return watch->StopwatchComplete;
 }
 
 void StopStopWatch(stopwatch_struct* watch)
