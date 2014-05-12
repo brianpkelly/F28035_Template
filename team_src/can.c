@@ -6,7 +6,7 @@
  */
 #include "all.h"
 
-unsigned int mask;
+unsigned long mask;
 stopwatch_struct* can_watch;
 struct ECAN_REGS ECanaShadow;
 
