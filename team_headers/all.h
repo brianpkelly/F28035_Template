@@ -9,14 +9,14 @@
 #define ALL_H_
 
 #include "DSP28x_Project.h"     // Device Headerfile and Examples Include File
-#include "stopwatch.h"
+#include "stopwatch_template.h"
 #include "op.h"
 #include "data.h"
 #include "Init.h"
 #include "SensorCov.h"
-#include "Boot.h"
+#include "boot_template.h"
 #include "PowerDown.h"
-#include "common.h"
+#include "common_template.h"
 #include "main.h"
 #include "clock.h"
 #include "can.h"
