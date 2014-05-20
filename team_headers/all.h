@@ -10,6 +10,7 @@
 
 #include "DSP28x_Project.h"     // Device Headerfile and Examples Include File
 #include "stopwatch_template.h"
+#include "can_template.h"
 #include "op.h"
 #include "data.h"
 #include "Init.h"

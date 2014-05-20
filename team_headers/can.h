@@ -30,12 +30,10 @@ void FillSendCAN(unsigned int Mbox);
 void ClearMailBoxes();
 void BUS_OFF();
 
-//todo USER: DEFINE IDs and mailboxes for output
+//todo USER: DEFINE IDs for all output
+//           DEFINE mailboxes for all output except heartbeat and command
 #define COMMAND_ID 		0x1
-#define COMMAND_BOX 	0
-
 #define HEARTBEAT_ID 	0x0
-#define HEARTBEAT_BOX 	1
 
 #define ADC_ID 			0x2
 #define ADC_BOX 		2
