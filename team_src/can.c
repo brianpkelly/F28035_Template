@@ -6,54 +6,26 @@
  */
 #include "all.h"
 
-unsigned long mask;
 stopwatch_struct* can_watch;
 struct ECAN_REGS ECanaShadow;
+unsigned long mask;
 
 void CANSetup()
 {
+	//System specific CAN setup
+	SystemCANInit(&ECanaShadow);
 
-	InitECanaGpio();
-	InitECana();
-
-	ClearMailBoxes();
-
-	ECanaShadow.CANMIM.all = 0;
-	ECanaShadow.CANMIL.all = 0;
-	ECanaShadow.CANGIM.all = 0;
-	ECanaShadow.CANGAM.bit.AMI = 0; //must be standard
-	ECanaShadow.CANGIM.bit.I1EN = 1;  // enable I1EN
-	ECanaShadow.CANMD.all = ECanaRegs.CANMD.all;
-	ECanaShadow.CANME.all = ECanaRegs.CANME.all;
-
-	//todo USER: Node specifc CAN setup
 	EALLOW;
-
-	// create mailbox for all Receive and transmit IDs
-	// MBOX0 - MBOX31
-
-	//Command RECEIVE
-	ECanaMboxes.MBOX0.MSGID.bit.IDE = 0; 	//standard id
-	ECanaMboxes.MBOX0.MSGID.bit.AME = 0;	// all bit must match
-	ECanaMboxes.MBOX0.MSGID.bit.AAM = 0; 	// no RTR AUTO TRANSMIT
-	ECanaMboxes.MBOX0.MSGCTRL.bit.DLC = 8;
-	ECanaMboxes.MBOX0.MSGID.bit.STDMSGID = COMMAND_ID;
-	ECanaShadow.CANMD.bit.MD0 = 1;			//receive
-	ECanaShadow.CANME.bit.ME0 = 1;			//enable
-	ECanaShadow.CANMIM.bit.MIM0  = 1; 		//int enable
-	ECanaShadow.CANMIL.bit.MIL0  = 1;  		// Int.-Level MB#0  -> I1EN
-
-	//Heart TRANSMIT
-	ECanaMboxes.MBOX1.MSGID.bit.IDE = 0; 	//standard id
-	ECanaMboxes.MBOX1.MSGID.bit.AME = 0; 	// all bit must match
-	ECanaMboxes.MBOX1.MSGID.bit.AAM = 1; 	//RTR AUTO TRANSMIT
-	ECanaMboxes.MBOX1.MSGCTRL.bit.DLC = 8;
-	ECanaMboxes.MBOX1.MSGID.bit.STDMSGID = HEARTBEAT_ID;
-	ECanaShadow.CANMD.bit.MD1 = 0; 			//transmit
-	ECanaShadow.CANME.bit.ME1 = 1;			//enable
+	//MBOX 0 and 1
+	CommandBoxInit();   // Mbox 0
+	HeartbeatBoxInit(); // Mbox 1
 
 
 	//SOMETHING ODD ABOUT ORDER HERE AND RTR BIT...
+
+	//todo USER: Node specifc CAN setup
+	// create mailbox for all Receive and transmit IDs
+	// MBOX2 - MBOX31
 
 	//adc TRANSMIT
 	ECanaMboxes.MBOX2.MSGID.bit.IDE = 0; 	//standard id
@@ -74,24 +46,13 @@ void CANSetup()
 	ECanaShadow.CANME.bit.ME3 = 1;			//enable
 
 
-	ECanaRegs.CANGAM.all = ECanaShadow.CANGAM.all;
-	ECanaRegs.CANGIM.all = ECanaShadow.CANGIM.all;
-	ECanaRegs.CANMIM.all = ECanaShadow.CANMIM.all;
-	ECanaRegs.CANMIL.all = ECanaShadow.CANMIL.all;
-	ECanaRegs.CANMD.all = ECanaShadow.CANMD.all;
-	ECanaRegs.CANME.all = ECanaShadow.CANME.all;
-    ECanaShadow.CANMC.all = ECanaRegs.CANMC.all;
-    ECanaShadow.CANMC.bit.STM = 0;    // No self-test mode
-    ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+
     EDIS;
-
-    //ENABLE PIE INTERRUPTS
-    IER |= M_INT9;
-    PieCtrlRegs.PIEIER9.bit.INTx6= 1;
-
-    can_watch = StartStopWatch(SENDCAN_STOPWATCH);
+    FinishCANInit();
+	can_watch = StartStopWatch(SENDCAN_STOPWATCH);
 }
 
+/*
 void ClearMailBoxes()
 {
     ECanaMboxes.MBOX0.MDH.all = 0;
@@ -158,58 +119,54 @@ void ClearMailBoxes()
     ECanaMboxes.MBOX31.MDL.all = 0;
     ECanaMboxes.MBOX31.MDH.all = 0;
 }
-
+*/
 char FillCAN(unsigned int Mbox)
 {
-	//todo USER: setup for all transmit MBOXs
-	struct ECAN_REGS ECanaShadow;
-	ECanaShadow.CANMC.all = ECanaRegs.CANMC.all;
-	switch (Mbox)								//choose mailbox
+	CopyMCToShadow(&ECanaShadow);
+	//ECanaShadow.CANMC.all = ECanaRegs.CANMC.all;
+
+	//Try to fill heartbeat. If not heartbeat mailbox, see if it's a user mailbox
+	if(FillHeartbeat(Mbox) != 1)
 	{
-	case HEARTBEAT_BOX:
-		//todo Nathan define heartbeat
-		EALLOW;
-		ECanaShadow.CANMC.bit.MBNR = Mbox;
-		ECanaShadow.CANMC.bit.CDR = 1;
-		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		ECanaMboxes.MBOX1.MDH.all = 0;
-		ECanaMboxes.MBOX1.MDL.all = 0;
-		ECanaMboxes.MBOX1.MDL.word.LOW_WORD = ops.Flags.all;
-		ECanaShadow.CANMC.bit.MBNR = 0;
-		ECanaShadow.CANMC.bit.CDR = 0;
-		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		EDIS;
-		return 1;
-	case ADC_BOX:
-		EALLOW;
-		ECanaShadow.CANMC.bit.MBNR = Mbox;
-		ECanaShadow.CANMC.bit.CDR = 1;
-		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		ECanaMboxes.MBOX2.MDH.all = 0;
-		ECanaMboxes.MBOX2.MDL.all = 0;
-		ECanaMboxes.MBOX2.MDL.all = data.adc;
-		ECanaShadow.CANMC.bit.CDR = 0;
-		ECanaShadow.CANMC.bit.MBNR = 0;
-		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		EDIS;
-		return 1;
-	case GP_BUTTON_BOX:
-		EALLOW;
-		ECanaShadow.CANMC.bit.MBNR = Mbox;
-		ECanaShadow.CANMC.bit.CDR = 1;
-		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		ECanaMboxes.MBOX3.MDH.all = 0;
-		ECanaMboxes.MBOX3.MDL.all = 0;
-		ECanaMboxes.MBOX3.MDL.all = data.gp_button;
-		ECanaShadow.CANMC.bit.CDR = 0;
-		ECanaShadow.CANMC.bit.MBNR = 0;
-		ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-		EDIS;
+		//todo USER: setup for all transmit MBOXs
+		switch (Mbox)								//choose mailbox
+		{
+			case ADC_BOX:
+				EALLOW;
+				ECanaShadow.CANMC.bit.MBNR = Mbox;
+				ECanaShadow.CANMC.bit.CDR = 1;
+				ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+				ECanaMboxes.MBOX2.MDH.all = 0;
+				ECanaMboxes.MBOX2.MDL.all = 0;
+				ECanaMboxes.MBOX2.MDL.all = data.adc;
+				ECanaShadow.CANMC.bit.CDR = 0;
+				ECanaShadow.CANMC.bit.MBNR = 0;
+				ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+				EDIS;
+				return 1;
+			case GP_BUTTON_BOX:
+				EALLOW;
+				ECanaShadow.CANMC.bit.MBNR = Mbox;
+				ECanaShadow.CANMC.bit.CDR = 1;
+				ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+				ECanaMboxes.MBOX3.MDH.all = 0;
+				ECanaMboxes.MBOX3.MDL.all = 0;
+				ECanaMboxes.MBOX3.MDL.all = data.gp_button;
+				ECanaShadow.CANMC.bit.CDR = 0;
+				ECanaShadow.CANMC.bit.MBNR = 0;
+				ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+				EDIS;
+				return 1;
+		}
+		return 0;
+	}
+	else
+	{
 		return 1;
 	}
-	return 0;
 }
 
+/*
 void FillSendCAN(unsigned Mbox)
 {
 	if (FillCAN(Mbox) == 1)
@@ -217,18 +174,18 @@ void FillSendCAN(unsigned Mbox)
 		SendCAN(Mbox);
 	}
 }
-
+*/
+//todo SEAN: Determine if setting the ops flag can be in a system function. What if user removes that op?
+//Another issue is if you put everything up until the stopWatchComplete into a system function, can_watch
+//is no longer available
 void SendCAN(unsigned int Mbox)
 {
+
 	// Check for bus off
-	ECanaShadow.CANMC.all = ECanaRegs.CANMC.all;
-	if (ECanaShadow.CANMC.bit.CCR == 1)
-	{
-		BUS_OFF();
-	}
-	// 1UL so there's a mask for at least 32 mailboxes
-	mask = 1UL << Mbox;
-	ECanaRegs.CANTRS.all = mask;
+	CopyMCToShadow(&ECanaShadow);
+	//ECanaShadow.CANMC.all = ECanaRegs.CANMC.all;
+	CheckBusOff();
+	mask = CreateMask(Mbox);
 
 	//todo Nathan: calibrate sendcan stopwatch
 	StopWatchRestart(can_watch);
@@ -236,7 +193,9 @@ void SendCAN(unsigned int Mbox)
 	do{ECanaShadow.CANTA.all = ECanaRegs.CANTA.all;}
 	while(((ECanaShadow.CANTA.all & mask) != mask) && (isStopWatchComplete(can_watch) == 0)); //wait to send or hit stop watch
 
-	ECanaRegs.CANTA.all = mask;						//clear flag
+	ClearFlags();
+
+	//recommended USER: Check for stopwatch flag to determine if there's a CAN error
 	if (isStopWatchComplete(can_watch) == 1)					//if stopwatch flag
 	{
 		ops.Flags.bit.can_error = 1;
@@ -251,56 +210,27 @@ void SendCAN(unsigned int Mbox)
 void FillCANData()
 {
 	//todo USER: use FillCAN to put data into correct mailboxes
-	FillCAN(ADC_BOX);
-	FillCAN(GP_BUTTON_BOX);
-}
-
-void BUS_OFF()
-{
-    EALLOW;
-    ECanaShadow.CANMC.all = ECanaRegs.CANMC.all;
-
-
-    ECanaShadow.CANMC.bit.CCR = 0;
-    ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
-
-    ECanaShadow.CANES.all = ECanaRegs.CANES.all;
-    while (ECanaShadow.CANES.bit.CCE != 0)
-    {
-        ECanaShadow.CANES.all = ECanaRegs.CANES.all;
-    }
-
-    EDIS;
+	/*
+	 * Examples:
+	 *	FillCAN(ADC_BOX);
+	 *  FillCAN(GP_BUTTON_BOX);
+	 */
 }
 
 
+
+//todo SEAN: Determine how to handle this interrupt
 // INT9.6
 __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
 {
 	Uint32 ops_id;
 	Uint32 dummy;
   	unsigned int mailbox_nr;
-  	ECanaShadow.CANGIF1.bit.MIV1 =  ECanaRegs.CANGIF1.bit.MIV1;
-  	mailbox_nr = ECanaShadow.CANGIF1.bit.MIV1;
+  	mailbox_nr = getMailboxNR();
   	//todo USER: Setup ops command
   	if(mailbox_nr == COMMAND_BOX)
   	{
-  		//todo Nathan: Define Command frame
-  		//proposed:
-  		//HIGH 4 BYTES = Uint32 ID
-  		//LOW 4 BYTES = Uint32 change to
-  		ops_id = ECanaMboxes.MBOX0.MDH.all;
-  		dummy = ECanaMboxes.MBOX0.MDL.all;
-		switch (ops_id)
-		{
-		case OPS_ID_STATE:
-			memcpy(&ops.State,&dummy,sizeof ops.State);
-			break;
-		case OPS_ID_STOPWATCHERROR:
-			memcpy(&ops.Flags.all,&dummy,sizeof ops.Flags.all);
-			break;
-		}
-		ECanaRegs.CANRMP.bit.RMP0 = 1;
+  		ReadCommand();
   	}
   	//todo USER: Setup other reads
 
