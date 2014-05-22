@@ -12,26 +12,7 @@ clock_struct Clock_Ticks = CLOCK_TICKS_CLEAR;
 
 void ClockSetup()
 {
-	Clock.RegsAddr = &CpuTimer1Regs;
-	// Initialize timer period to maximum:
-	CpuTimer1Regs.PRD.all  = 0xFFFFFFFF;
-	// Initialize pre-scale counter to divide by 1 (SYSCLKOUT):
-	CpuTimer1Regs.TPR.all  = 0;
-	CpuTimer1Regs.TPRH.all = 0;
-	// Make sure timer is stopped:
-	CpuTimer1Regs.TCR.bit.TSS = 1;
-	// Reload all counter register with period value:
-	CpuTimer1Regs.TCR.bit.TRB = 1;
-	// Reset interrupt counters:
-	Clock.InterruptCount = 0;
-
-	ConfigCpuTimer(&Clock,CPU_FREQ_MHZ, CLOCK_PERIOD);
-
-	//pie interrupt
-	IER |= M_INT13;
-
-	ReloadCpuTimer1();
-	StartCpuTimer1();
+	SystemClockSetup(&Clock, &Clock_Ticks);
 }
 
 // Connected to INT13 of CPU (use MINT13 mask):
@@ -44,8 +25,9 @@ __interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
 	 EINT;		//enable all interrupts
 
 	//todo USER: Define Clock ISR
+	ClockHeartbeat();
+
 	Clock_Ticks.DataOut++;
-	Clock_Ticks.HeartBeat++;
 
 	if (Clock_Ticks.DataOut >= DATAOUT_TICKS)
 	{
@@ -55,19 +37,8 @@ __interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
 		Clock_Ticks.DataOut = 0;
 	}
 
-	if (Clock_Ticks.HeartBeat >= HEARTBEAT_TICKS)
-	{
-		HeartBeat();
-		Clock_Ticks.HeartBeat = 0;
-	}
-
-	ReloadCpuTimer1();
-	StartCpuTimer1();
-
+	RestartCPUTimer1();
 	DINT;
 }
 
-void HeartBeat()
-{
-	FillSendCAN(HEARTBEAT_BOX);
-}
+
