@@ -17,6 +17,7 @@
 #include "SensorCov.h"
 #include "boot_template.h"
 #include "PowerDown.h"
+#include "PowerDown_template.h"
 #include "common_template.h"
 #include "main.h"
 #include "clock.h"
