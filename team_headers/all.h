@@ -24,7 +24,7 @@
 #include "can.h"
 #include <stdlib.h>
 #include "adc_template.h"
-#include "gpio.h"
+#include "gpio_template.h"
 #include "DSP2803x_GlobalPrototypes.h"
 #include "Flash2803x_API_Library.h"
 
