@@ -11,15 +11,11 @@
 ops_struct ops;
 data_struct data;
 
-void Initilize()
+void Initialize()
 {
 	OperationsSetup();
 	DataSetup();
-	CANSetup();
-	ClockSetup();
-	ops.State = STATE_SENSOR_COV;
-	StartPowerDownInt();			//start power down interrupt, this will change state to PowerDown if necessary
-	StopWatchSetUp(10);
+	SystemInit(10);
 }
 
 

@@ -27,7 +27,7 @@ void NextState(Uint16 MesgID)
 	switch (ops.State)
 	{
 	case STATE_INIT:
-		Initilize();
+		Initialize();
 		break;
 	case STATE_SENSOR_COV:
 		SensorCov();
@@ -39,7 +39,7 @@ void NextState(Uint16 MesgID)
 		PowerDown();
 		break;
 	default:
-		Initilize();
+		Initialize();
 	}
 }
 

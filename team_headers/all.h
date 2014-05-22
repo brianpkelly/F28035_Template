@@ -14,6 +14,7 @@
 #include "op.h"
 #include "data.h"
 #include "Init.h"
+#include "Init_template.h"
 #include "SensorCov.h"
 #include "boot_template.h"
 #include "PowerDown.h"
