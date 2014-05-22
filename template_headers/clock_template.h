@@ -8,7 +8,10 @@
 #ifndef CLOCK_TEMPLATE_H_
 #define CLOCK_TEMPLATE_H_
 
-
+void SystemClockSetup(struct CPUTIMER_VARS *clock, clock_struct *ticks);
+void ClockHeartbeat();
+void RestartCPUTimer1();
+void HeartBeat();
 
 
 #endif /* CLOCK_TEMPLATE_H_ */

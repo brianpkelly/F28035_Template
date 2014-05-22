@@ -20,9 +20,10 @@
 #include "common_template.h"
 #include "main.h"
 #include "clock.h"
+#include "clock_template.h"
 #include "can.h"
 #include <stdlib.h>
-#include "adc.h"
+#include "adc_template.h"
 #include "gpio.h"
 #include "DSP2803x_GlobalPrototypes.h"
 #include "Flash2803x_API_Library.h"

@@ -9,7 +9,6 @@
 #define CLOCK_H_
 
 void ClockSetup();
-void HeartBeat();
 
 //todo USER: define clock
 #define CLOCK_PERIOD 500000 //uS //so half second
