@@ -8,10 +8,10 @@
 #include "all.h"
 
 sys_ops_struct *ops_temp_sys, sc_start_ops;
-data_struct *data_temp_sys;
+sys_data_struct *data_temp_sys;
 stopwatch_struct* conv_watch_in_sys;
 
-void SystemSensorInit(sys_ops_struct *ops_pointer, data_struct *data_pointer)
+void SystemSensorInit(sys_ops_struct *ops_pointer, sys_data_struct *data_pointer)
 {
 	ops_temp_sys = ops_pointer;
 	data_temp_sys = data_pointer;
