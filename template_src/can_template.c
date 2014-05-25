@@ -200,7 +200,7 @@ int FillHeartbeat(unsigned int Mbox)
 		ECanaRegs.CANMC.all = SystemShadow->CANMC.all;
 		ECanaMboxes.MBOX1.MDH.all = 0;
 		ECanaMboxes.MBOX1.MDL.all = 0;
-		ECanaMboxes.MBOX1.MDL.word.LOW_WORD = ops.Flags.all;
+		ECanaMboxes.MBOX1.MDL.word.LOW_WORD = ops.SystemFlags.all;
 		SystemShadow->CANMC.bit.MBNR = 0;
 		SystemShadow->CANMC.bit.CDR = 0;
 		ECanaRegs.CANMC.all = SystemShadow->CANMC.all;
@@ -253,7 +253,7 @@ void ReadCommand()
 		memcpy(&ops.State,&dummy,sizeof ops.State);
 		break;
 	case OPS_ID_STOPWATCHERROR:
-		memcpy(&ops.Flags.all,&dummy,sizeof ops.Flags.all);
+		memcpy(&ops.SystemFlags.all,&dummy,sizeof ops.SystemFlags.all);
 		break;
 	}
 

@@ -198,11 +198,11 @@ void SendCAN(unsigned int Mbox)
 	//recommended USER: Check for stopwatch flag to determine if there's a CAN error
 	if (isStopWatchComplete(can_watch) == 1)					//if stopwatch flag
 	{
-		ops.Flags.bit.can_error = 1;
+		ops.SystemFlags.bit.can_error = 1;
 	}
-	else if (ops.Flags.bit.can_error == 1)		//if no stopwatch and flagged reset
+	else if (ops.SystemFlags.bit.can_error == 1)		//if no stopwatch and flagged reset
 	{
-		ops.Flags.bit.can_error = 0;
+		ops.SystemFlags.bit.can_error = 0;
 	}
 }
 

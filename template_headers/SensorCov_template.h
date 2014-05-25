@@ -9,7 +9,7 @@
 #define SENSORCOV_TEMPLATE_H_
 
 void SensorConv();
-void SystemSensorInit(ops_struct *ops_pointer, data_struct *data_pointer);
+void SystemSensorInit(sys_ops_struct *ops_pointer, data_struct *data_pointer);
 void SystemSensorDeInit();
 void LatchStruct();
 void SensorCovSystemInit();

@@ -8,7 +8,7 @@
 #include "all.h"
 
 
-ops_struct ops_temp;
+sys_ops_struct ops_temp;
 data_struct data_temp;
 
 void SensorCov()
@@ -64,7 +64,7 @@ void UpdateStruct()
 	{
 		//only cov error happens inside of conversion so all other changes are considered correct.
 		//update accordingly to correct cov_errors
-		ops.Flags.bit.cov_error = ops_temp.Flags.bit.cov_error;
+		ops.SystemFlags.bit.cov_error = ops_temp.SystemFlags.bit.cov_error;
 	}
 }
 

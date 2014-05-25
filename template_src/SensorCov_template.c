@@ -7,11 +7,11 @@
 
 #include "all.h"
 
-ops_struct *ops_temp_sys, sc_start_ops;
+sys_ops_struct *ops_temp_sys, sc_start_ops;
 data_struct *data_temp_sys;
 stopwatch_struct* conv_watch_in_sys;
 
-void SystemSensorInit(ops_struct *ops_pointer, data_struct *data_pointer)
+void SystemSensorInit(sys_ops_struct *ops_pointer, data_struct *data_pointer)
 {
 	ops_temp_sys = ops_pointer;
 	data_temp_sys = data_pointer;
@@ -79,15 +79,15 @@ void PerformSystemMeasurements(stopwatch_struct *watch)
 	//exit and stopwatch error if timeout
 	if (isStopWatchComplete(watch) == 1)
 	{
-		ops_temp_sys->Flags.bit.cov_error = 1;
+		ops_temp_sys->SystemFlags.bit.cov_error = 1;
 	}
 	else
 	{
-		ops_temp_sys->Flags.bit.cov_error = 0;
+		ops_temp_sys->SystemFlags.bit.cov_error = 0;
 	}
 
 
-	if (ops_temp_sys->Flags.all != 0)
+	if (ops_temp_sys->SystemFlags.all != 0)
 	{
 		SET12V();
 	}
@@ -109,7 +109,7 @@ unsigned int StateChangeFromInterrupt()
 
 unsigned int FlagChangeFromInterrupt()
 {
-	if(sc_start_ops.Flags.all != ops.Flags.all){
+	if(sc_start_ops.SystemFlags.all != ops.SystemFlags.all){
 		return 1;
 	}
 	else {
