@@ -14,6 +14,7 @@
 #include "op.h"
 #include "sys_op.h"
 #include "data.h"
+#include "sys_data.h"
 #include "Init.h"
 #include "SensorCov.h"
 #include "boot_template.h"
@@ -31,7 +32,7 @@
 #include "Flash2803x_API_Library.h"
 
 extern sys_ops_struct ops;
-extern data_struct data;
+extern sys_data_struct data;
 
 #define CPU_FREQ_MHZ	60
 
