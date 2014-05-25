@@ -8,7 +8,7 @@
 #include "all.h"
 
 
-ops_struct ops_temp, sc_start_ops;
+sys_ops_struct ops_temp, sc_start_ops;
 data_struct data_temp;
 stopwatch_struct* conv_watch;
 
@@ -91,15 +91,15 @@ void SensorCovMeasure()
 	//exit and stopwatch error if timeout
 	if (isStopWatchComplete(conv_watch) == 1)
 	{
-		ops_temp.Flags.bit.cov_error = 1;
+		ops_temp.SystemFlags.bit.cov_error = 1;
 	}
 	else
 	{
-		ops_temp.Flags.bit.cov_error = 0;
+		ops_temp.SystemFlags.bit.cov_error = 0;
 	}
 
 
-	if (ops_temp.Flags.all != 0)
+	if (ops_temp.SystemFlags.all != 0)
 	{
 		SET12V();
 	}
@@ -124,11 +124,11 @@ void UpdateStruct()
 		ops.State = ops_temp.State;
 	}
 
-	if(sc_start_ops.Flags.all == ops.Flags.all)
+	if(sc_start_ops.SystemFlags.all == ops.SystemFlags.all)
 	{
 		//only cov error happens inside of conversion so all other changes are considered correct.
 		//update accordingly to correct cov_errors
-		ops.Flags.bit.cov_error = ops_temp.Flags.bit.cov_error;
+		ops.SystemFlags.bit.cov_error = ops_temp.SystemFlags.bit.cov_error;
 	}
 }
 

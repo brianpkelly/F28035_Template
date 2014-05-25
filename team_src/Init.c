@@ -8,7 +8,7 @@
 #include "all.h"
 
 
-ops_struct ops;
+sys_ops_struct ops;
 data_struct data;
 
 void Initilize()
@@ -28,7 +28,7 @@ void OperationsSetup()
 {
 	//todo USER: OperationsSetup()
 	//add here and ops.h
-	ops.Flags.all = 0;
+	ops.SystemFlags.all = 0;
 	ops.State = STATE_SENSOR_COV;
 }
 
