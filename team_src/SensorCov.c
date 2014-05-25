@@ -9,7 +9,7 @@
 
 
 sys_ops_struct ops_temp;
-data_struct data_temp;
+sys_data_struct data_temp;
 
 void SensorCov()
 {
