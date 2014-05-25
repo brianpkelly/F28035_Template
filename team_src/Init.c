@@ -9,7 +9,7 @@
 
 
 sys_ops_struct ops;
-data_struct data;
+sys_data_struct data;
 
 void Initilize()
 {
