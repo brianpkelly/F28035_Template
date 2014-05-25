@@ -12,6 +12,7 @@
 #include "stopwatch_template.h"
 #include "can_template.h"
 #include "op.h"
+#include "sys_op.h"
 #include "data.h"
 #include "Init.h"
 #include "SensorCov.h"
@@ -28,7 +29,7 @@
 #include "DSP2803x_GlobalPrototypes.h"
 #include "Flash2803x_API_Library.h"
 
-extern ops_struct ops;
+extern sys_ops_struct ops;
 extern data_struct data;
 
 #define CPU_FREQ_MHZ	60
