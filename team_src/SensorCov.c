@@ -9,7 +9,7 @@
 
 
 sys_ops_struct ops_temp, sc_start_ops;
-data_struct data_temp;
+sys_data_struct data_temp;
 stopwatch_struct* conv_watch;
 
 void SensorCov()
