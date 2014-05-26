@@ -200,7 +200,8 @@ int FillHeartbeat(unsigned int Mbox)
 		ECanaRegs.CANMC.all = SystemShadow->CANMC.all;
 		ECanaMboxes.MBOX1.MDH.all = 0;
 		ECanaMboxes.MBOX1.MDL.all = 0;
-		ECanaMboxes.MBOX1.MDL.word.LOW_WORD = ops.SystemFlags.all;
+		ECanaMboxes.MBOX1.MDH.all = ops.UserFlags.all;
+		ECanaMboxes.MBOX1.MDL.all = ops.SystemFlags.all;
 		SystemShadow->CANMC.bit.MBNR = 0;
 		SystemShadow->CANMC.bit.CDR = 0;
 		ECanaRegs.CANMC.all = SystemShadow->CANMC.all;

@@ -8,6 +8,17 @@
 #ifndef CAN_TEMPLATE_H_
 #define CAN_TEMPLATE_H_
 
+struct CANmsg {
+   char MBox;
+   union CANMSGCTRL_REG   MSGCTRL;
+   union CANMDL_REG       MDL;
+   union CANMDH_REG       MDH;
+};
+
+struct TRS_REG {
+	union CANTRS_REG	TRS;
+};
+
 void SystemCANInit(struct ECAN_REGS *UserShadow);
 void CommandBoxInit();
 void HeartbeatBoxInit();
