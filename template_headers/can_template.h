@@ -24,6 +24,9 @@ unsigned long CreateMask(unsigned int Mbox);
 void ClearFlags();
 void ReadCommand();
 
+int CreateCANMailbox(int mailboxNum, int IDE, int AME, int AAM, int DLC, int STDMSGID, int Mode);
+int InsertCANMessage(Mbox, MDH, MDL);
+
 #define COMMAND_BOX 	0
 #define HEARTBEAT_BOX 	1
 
