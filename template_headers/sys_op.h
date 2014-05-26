@@ -28,12 +28,12 @@ typedef struct OPERATIONS
   unsigned long State;
   union UserFlags
   {
-	  long						all;
+	  int						all;
 	  user_flags_struct			bit;
   }								UserFlags;
   union SystemFlags
   {
-	  long 						all;
+	  int 						all;
 	  sys_flags_struct			bit;
   }								SystemFlags;
 } sys_ops_struct;
