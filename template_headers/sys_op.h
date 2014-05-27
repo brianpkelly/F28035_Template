@@ -26,6 +26,8 @@ typedef struct SYS_FLAGS
 typedef struct OPERATIONS
 {
   unsigned long State;
+  user_ops user_ops;
+
   union UserFlags
   {
 	  int						all;
@@ -36,6 +38,8 @@ typedef struct OPERATIONS
 	  int 						all;
 	  sys_flags_struct			bit;
   }								SystemFlags;
+
+
 } sys_ops_struct;
 
 #endif /* SYS_OP_H_ */
