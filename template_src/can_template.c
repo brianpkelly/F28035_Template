@@ -573,13 +573,13 @@ int CreateCANMailbox(int mailboxNum, int IDE, int AME, int AAM, int DLC, int STD
  *
  *  Returns 1 if message was inserted successfully and 0 if not.
  */
-int InsertCANMessage(Mbox, MDH, MDL)
+int InsertCANMessage(int Mbox, unsigned int MDH, unsigned int MDL)
 {
 	int result = 1;
 	EALLOW;
-	ECanaShadow.CANMC.bit.MBNR = Mbox;
-	ECanaShadow.CANMC.bit.CDR = 1;
-	ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+	SystemShadow->CANMC.bit.MBNR = Mbox;
+	SystemShadow->CANMC.bit.CDR = 1;
+	ECanaRegs.CANMC.all = SystemShadow->CANMC.all;
 	switch(Mbox)
 	{
 	case 2:
@@ -737,9 +737,9 @@ int InsertCANMessage(Mbox, MDH, MDL)
 	default:
 		result = 0;
 	}
-	ECanaShadow.CANMC.bit.CDR = 0;
-	ECanaShadow.CANMC.bit.MBNR = 0;
-	ECanaRegs.CANMC.all = ECanaShadow.CANMC.all;
+	SystemShadow->CANMC.bit.CDR = 0;
+	SystemShadow->CANMC.bit.MBNR = 0;
+	ECanaRegs.CANMC.all = SystemShadow->CANMC.all;
 	EDIS;
 	return result;
 }
