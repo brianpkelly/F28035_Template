@@ -14,3 +14,14 @@ void SystemInit(float time)
 	StopWatchSetUp(time);
 }
 
+void SetupSystemOperations()
+{
+	ops.SystemFlags.all = 0;
+	ops.State = STATE_SENSOR_COV;
+}
+
+void SetupDataOperations()
+{
+	data.adc = 0;
+	data.gp_button = 0;
+}
