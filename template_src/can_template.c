@@ -8,7 +8,7 @@
 #include "all.h"
 
 struct ECAN_REGS *SystemShadow;
-
+stopwatch_struct* can_watch;
 unsigned long system_mask;
 
 
@@ -79,6 +79,8 @@ void FinishCANInit()
 	//ENABLE PIE INTERRUPTS
 	IER |= M_INT9;
 	PieCtrlRegs.PIEIER9.bit.INTx6= 1;
+
+	can_watch = StartStopWatch(SENDCAN_STOPWATCH);
 }
 
 void ClearMailBoxes()
@@ -189,10 +191,11 @@ unsigned int getMailboxNR()
 	mailbox_nr = SystemShadow->CANGIF1.bit.MIV1;
 	return mailbox_nr;
 }
-int FillHeartbeat(unsigned int Mbox)
+char FillSystemBoxes(unsigned int Mbox)
 {
-	if(Mbox == HEARTBEAT_BOX)
+	switch (Mbox)								//choose mailbox
 	{
+	case HEARTBEAT_BOX:
 		//todo Nathan define heartbeat
 		EALLOW;
 		SystemShadow->CANMC.bit.MBNR = Mbox;
@@ -207,9 +210,35 @@ int FillHeartbeat(unsigned int Mbox)
 		ECanaRegs.CANMC.all = SystemShadow->CANMC.all;
 		EDIS;
 		return 1;
-	}
-	else
+	case ADC_BOX:
+		EALLOW;
+		SystemShadow->CANMC.bit.MBNR = Mbox;
+		SystemShadow->CANMC.bit.CDR = 1;
+		ECanaRegs.CANMC.all = SystemShadow->CANMC.all;
+		ECanaMboxes.MBOX2.MDH.all = 0;
+		ECanaMboxes.MBOX2.MDL.all = 0;
+		ECanaMboxes.MBOX2.MDL.all = data.adc;
+		SystemShadow->CANMC.bit.CDR = 0;
+		SystemShadow->CANMC.bit.MBNR = 0;
+		ECanaRegs.CANMC.all = SystemShadow->CANMC.all;
+		EDIS;
+		return 1;
+	case GP_BUTTON_BOX:
+		EALLOW;
+		SystemShadow->CANMC.bit.MBNR = Mbox;
+		SystemShadow->CANMC.bit.CDR = 1;
+		ECanaRegs.CANMC.all = SystemShadow->CANMC.all;
+		ECanaMboxes.MBOX3.MDH.all = 0;
+		ECanaMboxes.MBOX3.MDL.all = 0;
+		ECanaMboxes.MBOX3.MDL.all = data.gp_button;
+		SystemShadow->CANMC.bit.CDR = 0;
+		SystemShadow->CANMC.bit.MBNR = 0;
+		ECanaRegs.CANMC.all = SystemShadow->CANMC.all;
+		EDIS;
+		return 1;
+	default:
 		return 0;
+	}
 }
 
 void CheckBusOff()
@@ -220,22 +249,14 @@ void CheckBusOff()
 	}
 }
 
-unsigned long CreateMask(unsigned int Mbox)
+void CreateMask(unsigned int Mbox)
 {
 	// 1UL so there's a mask for at least 32 mailboxes
 	system_mask = 1UL << Mbox;
 	SystemShadow->CANTRS.all = system_mask;
 	ECanaRegs.CANTRS.all = SystemShadow->CANTRS.all;
-	return system_mask;
 }
-/*
- * Clears the transmission acknowledgment bit after a message has been sent.
- * This must be done before another message can be sent.
- */
-void ClearFlags()
-{
-	ECanaRegs.CANTA.all = system_mask;						//clear flag
-}
+
 
 void ReadCommand()
 {
@@ -259,4 +280,31 @@ void ReadCommand()
 	}
 
 	ECanaRegs.CANRMP.bit.RMP0 = 1;
+}
+
+void CheckForFlags()
+{
+	/*
+	 * Clears the transmission acknowledgment bit after a message has been sent.
+	 * This must be done before another message can be sent.
+	 */
+	ECanaRegs.CANTA.all = system_mask;						//clear flag
+	//recommended USER: Check for stopwatch flag to determine if there's a CAN error
+	if (isStopWatchComplete(can_watch) == 1)					//if stopwatch flag
+	{
+		ops.SystemFlags.bit.can_error = 1;
+	}
+	else if (ops.SystemFlags.bit.can_error == 1)		//if no stopwatch and flagged reset
+	{
+		ops.SystemFlags.bit.can_error = 0;
+	}
+}
+
+void BeginTransmission()
+{
+	//todo Nathan: calibrate sendcan stopwatch
+	StopWatchRestart(can_watch);
+
+	do{SystemShadow->CANTA.all = ECanaRegs.CANTA.all;}
+	while(((SystemShadow->CANTA.all & system_mask) != system_mask) && (isStopWatchComplete(can_watch) == 0)); //wait to send or hit stop watch
 }

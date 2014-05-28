@@ -29,11 +29,12 @@ void SendMailBoxes(unsigned int Mbox);
 void BUS_OFF();
 void CopyMCToShadow(struct ECAN_REGS *ECanaShadow);
 unsigned int getMailboxNR();
-int FillHeartbeat(unsigned int Mbox);
+char FillSystemBoxes(unsigned int Mbox);
 void CheckBusOff();
-unsigned long CreateMask(unsigned int Mbox);
-void ClearFlags();
+void CreateMask(unsigned int Mbox);
 void ReadCommand();
+void CheckForFlags();
+void BeginTransmission();
 
 #define COMMAND_BOX 	0
 #define HEARTBEAT_BOX 	1
