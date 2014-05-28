@@ -14,7 +14,7 @@ void SystemSensorDeInit();
 void LatchStruct();
 void SensorCovSystemInit();
 void PerformSystemMeasurements();
-unsigned int StateChangeFromInterrupt();
-unsigned int FlagChangeFromInterrupt();
+void SaveOpStates();
+void DetermineOpStates();
 
 #endif /* SENSORCOV_TEMPLATE_H_ */

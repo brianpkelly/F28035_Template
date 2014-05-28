@@ -46,7 +46,7 @@ void SensorCovMeasure()
 
 void UpdateStruct()
 {
-	memcpy(&data, &data_temp, sizeof(struct DATA));
+	SaveOpStates();
 
 	//todo USER: UpdateStruct
 	//update with node specific op changes
@@ -55,17 +55,8 @@ void UpdateStruct()
 
 	//Change bit is only set by ops changes outside of SensorCov.
 
-	if(!StateChangeFromInterrupt())
-	{
-		ops.State = ops_temp.State;
-	}
 
-	if(!FlagChangeFromInterrupt())
-	{
-		//only cov error happens inside of conversion so all other changes are considered correct.
-		//update accordingly to correct cov_errors
-		ops.SystemFlags.bit.cov_error = ops_temp.SystemFlags.bit.cov_error;
-	}
+	DetermineOpStates();
 }
 
 void SensorCovDeInit()

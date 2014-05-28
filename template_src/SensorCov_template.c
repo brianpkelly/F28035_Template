@@ -97,22 +97,22 @@ void PerformSystemMeasurements(stopwatch_struct *watch)
 	}
 }
 
-unsigned int StateChangeFromInterrupt()
+void SaveOpStates()
 {
-	if(sc_start_ops.State != ops.State) {
-		return 1;
-	}
-	else {
-		return 0;
-	}
+	memcpy(&data, data_temp_sys, sizeof(struct DATA));
 }
 
-unsigned int FlagChangeFromInterrupt()
+void DetermineOpStates()
 {
-	if(sc_start_ops.SystemFlags.all != ops.SystemFlags.all){
-		return 1;
+	if(sc_start_ops.SystemFlags.all == ops.SystemFlags.all)
+	{
+		ops.State = ops_temp_sys->State;
 	}
-	else {
-		return 0;
+
+	if(sc_start_ops.State == ops.State)
+	{
+		//only cov error happens inside of conversion so all other changes are considered correct.
+		//update accordingly to correct cov_errors
+		ops.SystemFlags.bit.cov_error = ops_temp_sys->SystemFlags.bit.cov_error;
 	}
 }
