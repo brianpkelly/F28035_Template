@@ -33,7 +33,7 @@ void SensorCovInit()
 
 void SensorCovMeasure()
 {
-	SensorCovSystemInit(&ops_temp);
+	SensorCovSystemInit();
 
 	readADC();
 	PerformSystemMeasurements();
