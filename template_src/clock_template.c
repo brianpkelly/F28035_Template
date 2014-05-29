@@ -45,7 +45,7 @@ void SystemClockSetup(struct CPUTIMER_VARS *clock, clock_struct *ticks)
  * Parameters:
  * 		clock_period - period of timer in us
  */
-void StartCPUTimer2(float clock_period)
+void InitializeCpuTimer2(float clock_period)
 {
 	CPUTimer2.RegsAddr = &CpuTimer2Regs;
 	// Initialize timer period to maximum:
