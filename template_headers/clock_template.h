@@ -9,8 +9,10 @@
 #define CLOCK_TEMPLATE_H_
 
 void SystemClockSetup(struct CPUTIMER_VARS *clock, clock_struct *ticks);
+void StartCPUTimer2(float clock_period);
 void ClockHeartbeat();
 void RestartCPUTimer1();
+void RestartCpuTimer2();
 void HeartBeat();
 
 
