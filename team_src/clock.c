@@ -7,12 +7,11 @@
 #include "all.h"
 
 
-struct CPUTIMER_VARS Clock;
 clock_struct Clock_Ticks = CLOCK_TICKS_CLEAR;
 
 void ClockSetup()
 {
-	SystemClockSetup(&Clock, &Clock_Ticks);
+	SystemClockSetup(&Clock_Ticks);
 }
 
 // Connected to INT13 of CPU (use MINT13 mask):
