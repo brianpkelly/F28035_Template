@@ -7,7 +7,6 @@
 #include "all.h"
 
 struct ECAN_REGS ECanaShadow;
-unsigned long mask;
 
 void CANSetup()
 {
