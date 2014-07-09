@@ -40,7 +40,7 @@ void SystemSensorDeInit()
 void LatchStruct()
 {
 	memcpy(ops_temp_sys, &ops, sizeof(struct OPERATIONS));
-	memcpy(data_temp_sys, &data, sizeof(struct DATA));
+	memcpy(data_temp_sys, &data, sizeof(struct SYSTEM_DATA));
 }
 
 void SensorCovSystemInit()
@@ -99,7 +99,7 @@ void PerformSystemMeasurements(stopwatch_struct *watch)
 
 void SaveOpStates()
 {
-	memcpy(&data, data_temp_sys, sizeof(struct DATA));
+	memcpy(&data, data_temp_sys, sizeof(struct SYSTEM_DATA));
 }
 
 void DetermineOpStates()
