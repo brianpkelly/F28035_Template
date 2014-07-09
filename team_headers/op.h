@@ -16,7 +16,10 @@
 typedef struct USER_FLAGS
 {
 	char user_error : 1;
-}user_flags_struct;
+} user_flags_struct;
 
-
+typedef struct USER_OPS
+{
+	char user_op;
+} user_ops;
 #endif /* OP_H_ */
