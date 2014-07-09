@@ -48,7 +48,7 @@ void SensorCovInit()
 void LatchStruct()
 {
 	memcpy(&ops_temp, &ops, sizeof(struct OPERATIONS));
-	memcpy(&data_temp, &data, sizeof(struct DATA));
+	memcpy(&data_temp, &data, sizeof(struct SYSTEM_DATA));
 }
 
 void SensorCovMeasure()
@@ -111,7 +111,7 @@ void SensorCovMeasure()
 
 void UpdateStruct()
 {
-	memcpy(&data, &data_temp, sizeof(struct DATA));
+	memcpy(&data, &data_temp, sizeof(struct SYSTEM_DATA));
 
 	//todo USER: UpdateStruct
 	//update with node specific op changes
