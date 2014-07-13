@@ -252,9 +252,12 @@ void CheckBusOff()
 void CreateMask(unsigned int Mbox)
 {
 	// 1UL so there's a mask for at least 32 mailboxes
+	EALLOW;
 	system_mask = 1UL << Mbox;
 	SystemShadow->CANTRS.all = system_mask;
 	ECanaRegs.CANTRS.all = SystemShadow->CANTRS.all;
+	EDIS;
+
 }
 
 
@@ -278,8 +281,7 @@ void ReadCommand()
 		memcpy(&ops.SystemFlags.all,&dummy,sizeof ops.SystemFlags.all);
 		break;
 	}
-
-	ECanaRegs.CANRMP.bit.RMP0 = 1;
+	SystemShadow->CANRMP.bit.RMP0 = 1;
 }
 
 void CheckForFlags()
