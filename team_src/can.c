@@ -180,7 +180,7 @@ void FillSendCAN(unsigned Mbox)
 //is no longer available
 void SendCAN(unsigned int Mbox)
 {
-
+	EALLOW;
 	// Check for bus off
 	CopyMCToShadow(&ECanaShadow);
 	//ECanaShadow.CANMC.all = ECanaRegs.CANMC.all;
@@ -204,6 +204,7 @@ void SendCAN(unsigned int Mbox)
 	{
 		ops.SystemFlags.bit.can_error = 0;
 	}
+	EDIS;
 }
 
 
