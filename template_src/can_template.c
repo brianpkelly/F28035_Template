@@ -286,11 +286,13 @@ void ReadCommand()
 
 void CheckForFlags()
 {
+	EALLOW;
 	/*
 	 * Clears the transmission acknowledgment bit after a message has been sent.
 	 * This must be done before another message can be sent.
 	 */
-	ECanaRegs.CANTA.all = system_mask;						//clear flag
+	SystemShadow->CANTA.all = system_mask;
+	ECanaRegs.CANTA.all = SystemShadow->CANTA.all;						//clear flag
 	//recommended USER: Check for stopwatch flag to determine if there's a CAN error
 	if (isStopWatchComplete(can_watch) == 1)					//if stopwatch flag
 	{
@@ -300,6 +302,7 @@ void CheckForFlags()
 	{
 		ops.SystemFlags.bit.can_error = 0;
 	}
+	EDIS;
 }
 
 void BeginTransmission()
