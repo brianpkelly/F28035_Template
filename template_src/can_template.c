@@ -222,9 +222,11 @@ void CheckBusOff()
 unsigned long CreateMask(unsigned int Mbox)
 {
 	// 1UL so there's a mask for at least 32 mailboxes
+	EALLOW;
 	system_mask = 1UL << Mbox;
 	SystemShadow->CANTRS.all = system_mask;
 	ECanaRegs.CANTRS.all = SystemShadow->CANTRS.all;
+	EDIS;
 	return system_mask;
 }
 /*
@@ -233,7 +235,10 @@ unsigned long CreateMask(unsigned int Mbox)
  */
 void ClearFlags()
 {
-	ECanaRegs.CANTA.all = system_mask;						//clear flag
+	EALLOW;
+	SystemShadow->CANTA.all = system_mask;
+	ECanaRegs.CANTA.all = SystemShadow->CANTA.all;						//clear flag
+	EDIS;
 }
 
 void ReadCommand()
@@ -256,8 +261,10 @@ void ReadCommand()
 		memcpy(&ops.SystemFlags.all,&dummy,sizeof ops.SystemFlags.all);
 		break;
 	}
-
-	ECanaRegs.CANRMP.bit.RMP0 = 1;
+	EALLOW;
+	SystemShadow->CANRMP.bit.RMP0 = 1;
+	ECanaRegs.CANRMP.bit.RMP0 = SystemShadow->CANRMP.bit.RMP0;
+	EDIS;
 }
 
 /*
