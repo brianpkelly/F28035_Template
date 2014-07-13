@@ -19,8 +19,8 @@
 
 typedef struct SYS_FLAGS
 {
-	char cov_error : 1;
-	char can_error : 1;
+	unsigned char cov_error : 1;
+	unsigned char can_error : 1;
 }sys_flags_struct;
 
 typedef struct OPERATIONS
