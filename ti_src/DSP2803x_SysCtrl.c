@@ -60,9 +60,9 @@ void InitSysCtrl(void)
 
    //External CRYSTAL oscillator and turns off all other clock
    // sources to minimize power consumption.
-   XtalOscSel();
+   //XtalOscSel();
    //Internal oscillator
-   //IntOsc1Sel();
+   IntOsc1Sel();
    // Initialize the PLL control: PLLCR and CLKINDIV
    // DSP28_PLLCR and DSP28_CLKINDIV are defined in DSP2803x_Examples.h
    InitPll(DSP28_PLLCR,DSP28_DIVSEL);
