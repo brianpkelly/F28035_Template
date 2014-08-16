@@ -9,7 +9,7 @@
 #define INIT_H_
 
 
-void Initilize();
+void Initialize();
 
 void OperationsSetup();
 void DataSetup();

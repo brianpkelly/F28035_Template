@@ -16,6 +16,7 @@
 #include "data.h"
 #include "sys_data.h"
 #include "Init.h"
+#include "Init_template.h"
 #include "SensorCov.h"
 #include "SensorCov_template.h"
 #include "boot_template.h"
