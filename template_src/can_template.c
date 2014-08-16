@@ -82,8 +82,8 @@ void GPButtonBoxInit()
 	ECanaMboxes.MBOX3.MSGID.bit.AAM = 1; 	//RTR AUTO TRANSMIT
 	ECanaMboxes.MBOX3.MSGCTRL.bit.DLC = 8;
 	ECanaMboxes.MBOX3.MSGID.bit.STDMSGID = GP_BUTTON_ID;
-	ECanaShadow.CANMD.bit.MD3 = 0; 			//transmit
-	ECanaShadow.CANME.bit.ME3 = 1;			//enable
+	SystemShadow->CANMD.bit.MD3 = 0; 			//transmit
+	SystemShadow->CANME.bit.ME3 = 1;			//enable
 }
 
 void FinishCANInit()
