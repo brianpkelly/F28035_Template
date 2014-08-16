@@ -11,7 +11,6 @@
 void SensorCov();
 
 void SensorCovInit();
-void LatchStruct();
 void SensorCovMeasure();
 void UpdateStruct();
 void SensorCovDeInit();
