@@ -62,6 +62,30 @@ void HeartbeatBoxInit()
 	EDIS;
 }
 
+void ADCBoxInit()
+{
+	//adc TRANSMIT
+	ECanaMboxes.MBOX2.MSGID.bit.IDE = 0; 	//standard id
+	ECanaMboxes.MBOX2.MSGID.bit.AME = 0; 	// all bit must match
+	ECanaMboxes.MBOX2.MSGID.bit.AAM = 1; 	//RTR AUTO TRANSMIT
+	ECanaMboxes.MBOX2.MSGCTRL.bit.DLC = 8;
+	ECanaMboxes.MBOX2.MSGID.bit.STDMSGID = ADC_ID;
+	SystemShadow->CANMD.bit.MD2 = 0; 			//transmit
+	SystemShadow->CANME.bit.ME2 = 1;			//enable
+}
+
+void GPButtonBoxInit()
+{
+	//gp_button TRANSMIT
+	ECanaMboxes.MBOX3.MSGID.bit.IDE = 0; 	//standard id
+	ECanaMboxes.MBOX3.MSGID.bit.AME = 0; 	// all bit must match
+	ECanaMboxes.MBOX3.MSGID.bit.AAM = 1; 	//RTR AUTO TRANSMIT
+	ECanaMboxes.MBOX3.MSGCTRL.bit.DLC = 8;
+	ECanaMboxes.MBOX3.MSGID.bit.STDMSGID = GP_BUTTON_ID;
+	ECanaShadow.CANMD.bit.MD3 = 0; 			//transmit
+	ECanaShadow.CANME.bit.ME3 = 1;			//enable
+}
+
 void FinishCANInit()
 {
 	EALLOW;
@@ -159,6 +183,7 @@ void FillSendCAN(unsigned Mbox)
 		SendCAN(Mbox);
 	}
 }
+
 
 void BUS_OFF()
 {

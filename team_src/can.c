@@ -14,34 +14,16 @@ void CANSetup()
 	SystemCANInit(&ECanaShadow);
 
 	EALLOW;
-	//MBOX 0 and 1
+	//MBOX 0 - 3
 	CommandBoxInit();   // Mbox 0
 	HeartbeatBoxInit(); // Mbox 1
+	ADCBoxInit();		// Mbox 2
+	GPButtonBoxInit();	// Mbox 3
 
-
-	//SOMETHING ODD ABOUT ORDER HERE AND RTR BIT...
 
 	//todo USER: Node specifc CAN setup
 	// create mailbox for all Receive and transmit IDs
-	// MBOX2 - MBOX31
-
-	//adc TRANSMIT
-	ECanaMboxes.MBOX2.MSGID.bit.IDE = 0; 	//standard id
-	ECanaMboxes.MBOX2.MSGID.bit.AME = 0; 	// all bit must match
-	ECanaMboxes.MBOX2.MSGID.bit.AAM = 1; 	//RTR AUTO TRANSMIT
-	ECanaMboxes.MBOX2.MSGCTRL.bit.DLC = 8;
-	ECanaMboxes.MBOX2.MSGID.bit.STDMSGID = ADC_ID;
-	ECanaShadow.CANMD.bit.MD2 = 0; 			//transmit
-	ECanaShadow.CANME.bit.ME2 = 1;			//enable
-
-	//gp_button TRANSMIT
-	ECanaMboxes.MBOX3.MSGID.bit.IDE = 0; 	//standard id
-	ECanaMboxes.MBOX3.MSGID.bit.AME = 0; 	// all bit must match
-	ECanaMboxes.MBOX3.MSGID.bit.AAM = 1; 	//RTR AUTO TRANSMIT
-	ECanaMboxes.MBOX3.MSGCTRL.bit.DLC = 8;
-	ECanaMboxes.MBOX3.MSGID.bit.STDMSGID = GP_BUTTON_ID;
-	ECanaShadow.CANMD.bit.MD3 = 0; 			//transmit
-	ECanaShadow.CANME.bit.ME3 = 1;			//enable
+	// MBOX4 - MBOX31
 
     EDIS;
     FinishCANInit();
@@ -83,17 +65,15 @@ void SendCAN(unsigned int Mbox)
 
 void FillCANData()
 {
-	//todo USER: use FillCAN to put data into correct mailboxes
 	/*
-	 * Examples:
-	 *	FillCAN(ADC_BOX);
-	 *  FillCAN(GP_BUTTON_BOX);
+	 * System FillCANData
 	 */
+	FillCAN(ADC_BOX);
+	FillCAN(GP_BUTTON_BOX);
+	//todo USER: use FillCAN to put data into correct mailboxes
+
 }
 
-
-
-//todo SEAN: Determine how to handle this interrupt
 // INT9.6
 __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
 {
