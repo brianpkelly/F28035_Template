@@ -22,6 +22,8 @@ struct TRS_REG {
 void SystemCANInit(struct ECAN_REGS *UserShadow);
 void CommandBoxInit();
 void HeartbeatBoxInit();
+void ADCBoxInit();
+void GPButtonBoxInit();
 void FinishCANInit();
 void ClearMailBoxes();
 void FillSendCAN(unsigned int Mbox);
