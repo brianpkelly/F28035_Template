@@ -38,6 +38,9 @@ void ReadCommand();
 void CheckForFlags();
 void BeginTransmission();
 
+int CreateCANMailbox(int mailboxNum, int IDE, int AME, int AAM, int DLC, int STDMSGID, int Mode);
+int InsertCANMessage(int Mbox, unsigned int MDH, unsigned int MDL);
+
 #define COMMAND_BOX 	0
 #define HEARTBEAT_BOX 	1
 #define COMMAND_ID 		0x1
