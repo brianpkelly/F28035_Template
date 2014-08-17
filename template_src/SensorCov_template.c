@@ -104,12 +104,12 @@ void SaveOpStates()
 
 void DetermineOpStates()
 {
-	if(sc_start_ops.SystemFlags.all == ops.SystemFlags.all)
+	if(sc_start_ops.State == ops.State)
 	{
 		ops.State = ops_temp_sys->State;
 	}
 
-	if(sc_start_ops.State == ops.State)
+	if(sc_start_ops.SystemFlags.all == ops.SystemFlags.all)
 	{
 		//only cov error happens inside of conversion so all other changes are considered correct.
 		//update accordingly to correct cov_errors
