@@ -8,22 +8,33 @@
 
 struct ECAN_REGS ECanaShadow;
 
+/*
+ * Function responsible for initializing the CAN module.
+ *
+ * For simple CAN setup the function CreateCANMailbox can be used to specify user
+ * mailboxes.
+ */
 void CANSetup()
 {
 	//System specific CAN setup
 	SystemCANInit(&ECanaShadow);
 
 	EALLOW;
-	//MBOX 0 - 3
+	//MBOX 0 - 1
 	CommandBoxInit();   // Mbox 0
 	HeartbeatBoxInit(); // Mbox 1
-	ADCBoxInit();		// Mbox 2
-	GPButtonBoxInit();	// Mbox 3
+	/*
+	* todo USER: Node specifc CAN setup
+	* create mailbox for all Receive and transmit IDs
+	* MBOX2 - MBOX31
+    *
+	* CreateCANMailbox(int mailboxNum, int IDE, int AME, int AAM, int DLC, int STDMSGID, int Mode)
+	*/
 
-
-	//todo USER: Node specifc CAN setup
-	// create mailbox for all Receive and transmit IDs
-	// MBOX4 - MBOX31
+	//adc TRANSMIT
+	CreateCANMailbox(2,0,0,1,8,ADC_ID,0);
+	//gp_button TRANSMIT
+	CreateCANMailbox(3,0,0,1,8,GP_BUTTON_ID,0);
 
     EDIS;
     FinishCANInit();
@@ -32,14 +43,23 @@ void CANSetup()
 char FillCAN(unsigned int Mbox)
 {
 	CopyMCToShadow(&ECanaShadow);
-	//ECanaShadow.CANMC.all = ECanaRegs.CANMC.all;
 
 	//Try to fill heartbeat. If not heartbeat mailbox, see if it's a user mailbox
 	if(FillSystemBoxes(Mbox) != 1)
 	{
 		//todo USER: setup for all transmit MBOXs
-
-		return 0;
+		//InsertCANMessage(int Mbox, unsigned int MDH, unsigned int MDL)
+		switch (Mbox)
+		{
+		case ADC_BOX:
+			InsertCANMessage(ADC_BOX, 0, data.adc);
+			return 1;
+		case GP_BUTTON_BOX:
+			InsertCANMessage(GP_BUTTON_BOX, 0, data.gp_button);
+			return 1;
+		default:
+			return 0;
+		}
 	}
 	else
 	{
@@ -65,13 +85,9 @@ void SendCAN(unsigned int Mbox)
 
 void FillCANData()
 {
-	/*
-	 * System FillCANData
-	 */
+	//todo USER: use FillCAN to put data into correct mailboxes
 	FillCAN(ADC_BOX);
 	FillCAN(GP_BUTTON_BOX);
-	//todo USER: use FillCAN to put data into correct mailboxes
-
 }
 
 // INT9.6
@@ -90,4 +106,12 @@ __interrupt void ECAN1INTA_ISR(void)  // eCAN-A
 
   	//To receive more interrupts from this PIE group, acknowledge this interrupt
   	PieCtrlRegs.PIEACK.all = PIEACK_GROUP9;
+}
+
+// INT9.5
+__interrupt void ECAN0INTA_ISR(void)   // eCAN-A
+{
+
+	// To receive more interrupts from this PIE group, acknowledge this interrupt
+	PieCtrlRegs.PIEACK.all = PIEACK_GROUP9;
 }

@@ -25,15 +25,6 @@
 //TODO USER: copy and change isr accordingly
 
 
-__interrupt void INT14_ISR(void)     // INT14 or CPU-Timer2
-{
-  // Insert ISR Code here
-
-  // Next two lines for debug only to halt the processor here
-  // Remove after inserting ISR Code
-  __asm ("      ESTOP0");
-  for(;;);
-}
 
 __interrupt void DATALOG_ISR(void)   // Datalogging interrupt
 {
@@ -726,21 +717,6 @@ __interrupt void LIN0INTA_ISR(void)     // LIN-A
 
 // INT9.4
 __interrupt void LIN1INTA_ISR(void)     // LIN-A
-{
-  // Insert ISR Code here
-
-  // To receive more interrupts from this PIE group, acknowledge this interrupt
-  // PieCtrlRegs.PIEACK.all = PIEACK_GROUP9;
-
-  // Next two lines for debug only to halt the processor here
-  // Remove after inserting ISR Code
-  __asm ("      ESTOP0");
-  for(;;);
-
-}
-
-// INT9.5
-__interrupt void ECAN0INTA_ISR(void)  // eCAN-A
 {
   // Insert ISR Code here
 

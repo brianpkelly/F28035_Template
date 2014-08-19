@@ -62,30 +62,6 @@ void HeartbeatBoxInit()
 	EDIS;
 }
 
-void ADCBoxInit()
-{
-	//adc TRANSMIT
-	ECanaMboxes.MBOX2.MSGID.bit.IDE = 0; 	//standard id
-	ECanaMboxes.MBOX2.MSGID.bit.AME = 0; 	// all bit must match
-	ECanaMboxes.MBOX2.MSGID.bit.AAM = 1; 	//RTR AUTO TRANSMIT
-	ECanaMboxes.MBOX2.MSGCTRL.bit.DLC = 8;
-	ECanaMboxes.MBOX2.MSGID.bit.STDMSGID = ADC_ID;
-	SystemShadow->CANMD.bit.MD2 = 0; 			//transmit
-	SystemShadow->CANME.bit.ME2 = 1;			//enable
-}
-
-void GPButtonBoxInit()
-{
-	//gp_button TRANSMIT
-	ECanaMboxes.MBOX3.MSGID.bit.IDE = 0; 	//standard id
-	ECanaMboxes.MBOX3.MSGID.bit.AME = 0; 	// all bit must match
-	ECanaMboxes.MBOX3.MSGID.bit.AAM = 1; 	//RTR AUTO TRANSMIT
-	ECanaMboxes.MBOX3.MSGCTRL.bit.DLC = 8;
-	ECanaMboxes.MBOX3.MSGID.bit.STDMSGID = GP_BUTTON_ID;
-	SystemShadow->CANMD.bit.MD3 = 0; 			//transmit
-	SystemShadow->CANME.bit.ME3 = 1;			//enable
-}
-
 void FinishCANInit()
 {
 	EALLOW;
@@ -235,6 +211,7 @@ char FillSystemBoxes(unsigned int Mbox)
 		ECanaRegs.CANMC.all = SystemShadow->CANMC.all;
 		EDIS;
 		return 1;
+	/*
 	case ADC_BOX:
 		EALLOW;
 		SystemShadow->CANMC.bit.MBNR = Mbox;
@@ -261,6 +238,7 @@ char FillSystemBoxes(unsigned int Mbox)
 		ECanaRegs.CANMC.all = SystemShadow->CANMC.all;
 		EDIS;
 		return 1;
+	*/
 	default:
 		return 0;
 	}
@@ -341,7 +319,7 @@ void BeginTransmission()
 
 /*
  * Creates a new CAN mailbox with the following options the user must pass:
- * 		mailboxNum: Mailbox number. 1 < mailboxNum < 32. Mailbox 1 and 2 are reserved.
+ * 		mailboxNum: Mailbox number. 3 < mailboxNum < 32. Mailbox 0 - 3 are reserved.
  * 		IDE: Identifier extensive bit. Check TI documents for more details. Must be 1 or 0. Usually 0
  * 		AME: Acceptance mask enable bit. 0 means all identifier bits must match, 1 means use acceptance mask
  * 		AAM: Auto answer mode bit. 1 is auto-answer, 0 is normal transmit mode.
@@ -643,7 +621,7 @@ int CreateCANMailbox(int mailboxNum, int IDE, int AME, int AAM, int DLC, int STD
 
 /*
  *  Performs all the required registry calls to place data into a CAN message
- * 		Mbox: the mailbox to place the message into
+ * 		Mbox: the mailbox to place the message into (3 < Mbox < 32)
  * 		MDH: The high 32 bit portion of the CAN message
  * 		MDL: The low 32 bit portion of the CAN message
  *
@@ -662,157 +640,215 @@ int InsertCANMessage(int Mbox, unsigned int MDH, unsigned int MDL)
 	switch(Mbox)
 	{
 	case 2:
+		if(ECanaRegs.CANMD.bit.MD2 == 1) return 0; // Mailbox is a receiving mailbox
 		ECanaMboxes.MBOX2.MDH.all = 0;
 		ECanaMboxes.MBOX2.MDL.all = 0;
 		ECanaMboxes.MBOX2.MDH.all = MDH;
 		ECanaMboxes.MBOX2.MDL.all = MDL;
-
+		break;
 	case 3:
+		if(ECanaRegs.CANMD.bit.MD3 == 1) return 0;
 		ECanaMboxes.MBOX3.MDH.all = 0;
 		ECanaMboxes.MBOX3.MDL.all = 0;
 		ECanaMboxes.MBOX3.MDH.all = MDH;
 		ECanaMboxes.MBOX3.MDL.all = MDL;
-
+		break;
 	case 4:
+		if(ECanaRegs.CANMD.bit.MD4 == 1) return 0;
 		ECanaMboxes.MBOX4.MDH.all = 0;
 		ECanaMboxes.MBOX4.MDL.all = 0;
 		ECanaMboxes.MBOX4.MDH.all = MDH;
 		ECanaMboxes.MBOX4.MDL.all = MDL;
+		break;
 	case 5:
+		if(ECanaRegs.CANMD.bit.MD5 == 1) return 0;
 		ECanaMboxes.MBOX5.MDH.all = 0;
 		ECanaMboxes.MBOX5.MDL.all = 0;
 		ECanaMboxes.MBOX5.MDH.all = MDH;
 		ECanaMboxes.MBOX5.MDL.all = MDL;
+		break;
 	case 6:
+		if(ECanaRegs.CANMD.bit.MD6 == 1) return 0;
 		ECanaMboxes.MBOX6.MDH.all = 0;
 		ECanaMboxes.MBOX6.MDL.all = 0;
 		ECanaMboxes.MBOX6.MDH.all = MDH;
 		ECanaMboxes.MBOX6.MDL.all = MDL;
+		break;
 	case 7:
+		if(ECanaRegs.CANMD.bit.MD7 == 1) return 0;
 		ECanaMboxes.MBOX7.MDH.all = 0;
 		ECanaMboxes.MBOX7.MDL.all = 0;
 		ECanaMboxes.MBOX7.MDH.all = MDH;
 		ECanaMboxes.MBOX7.MDL.all = MDL;
+		break;
 	case 8:
+		if(ECanaRegs.CANMD.bit.MD8 == 1) return 0;
 		ECanaMboxes.MBOX8.MDH.all = 0;
 		ECanaMboxes.MBOX8.MDL.all = 0;
 		ECanaMboxes.MBOX8.MDH.all = MDH;
 		ECanaMboxes.MBOX8.MDL.all = MDL;
+		break;
 	case 9:
+		if(ECanaRegs.CANMD.bit.MD9 == 1) return 0;
 		ECanaMboxes.MBOX9.MDH.all = 0;
 		ECanaMboxes.MBOX9.MDL.all = 0;
 		ECanaMboxes.MBOX9.MDH.all = MDH;
 		ECanaMboxes.MBOX9.MDL.all = MDL;
+		break;
 	case 10:
+		if(ECanaRegs.CANMD.bit.MD10 == 1) return 0;
 		ECanaMboxes.MBOX10.MDH.all = 0;
 		ECanaMboxes.MBOX10.MDL.all = 0;
 		ECanaMboxes.MBOX10.MDH.all = MDH;
 		ECanaMboxes.MBOX10.MDL.all = MDL;
+		break;
 	case 11:
+		if(ECanaRegs.CANMD.bit.MD11 == 1) return 0;
 		ECanaMboxes.MBOX11.MDH.all = 0;
 		ECanaMboxes.MBOX11.MDL.all = 0;
 		ECanaMboxes.MBOX11.MDH.all = MDH;
 		ECanaMboxes.MBOX11.MDL.all = MDL;
+		break;
 	case 12:
+		if(ECanaRegs.CANMD.bit.MD12 == 1) return 0;
 		ECanaMboxes.MBOX12.MDH.all = 0;
 		ECanaMboxes.MBOX12.MDL.all = 0;
 		ECanaMboxes.MBOX12.MDH.all = MDH;
 		ECanaMboxes.MBOX12.MDL.all = MDL;
+		break;
 	case 13:
+		if(ECanaRegs.CANMD.bit.MD13 == 1) return 0;
 		ECanaMboxes.MBOX13.MDH.all = 0;
 		ECanaMboxes.MBOX13.MDL.all = 0;
 		ECanaMboxes.MBOX13.MDH.all = MDH;
 		ECanaMboxes.MBOX13.MDL.all = MDL;
+		break;
 	case 14:
+		if(ECanaRegs.CANMD.bit.MD14 == 1) return 0;
 		ECanaMboxes.MBOX14.MDH.all = 0;
 		ECanaMboxes.MBOX14.MDL.all = 0;
 		ECanaMboxes.MBOX14.MDH.all = MDH;
 		ECanaMboxes.MBOX14.MDL.all = MDL;
+		break;
 	case 15:
+		if(ECanaRegs.CANMD.bit.MD15 == 1) return 0;
 		ECanaMboxes.MBOX15.MDH.all = 0;
 		ECanaMboxes.MBOX15.MDL.all = 0;
 		ECanaMboxes.MBOX15.MDH.all = MDH;
 		ECanaMboxes.MBOX15.MDL.all = MDL;
+		break;
 	case 16:
+		if(ECanaRegs.CANMD.bit.MD16 == 1) return 0;
 		ECanaMboxes.MBOX16.MDH.all = 0;
 		ECanaMboxes.MBOX16.MDL.all = 0;
 		ECanaMboxes.MBOX16.MDH.all = MDH;
 		ECanaMboxes.MBOX16.MDL.all = MDL;
+		break;
 	case 17:
+		if(ECanaRegs.CANMD.bit.MD17 == 1) return 0;
 		ECanaMboxes.MBOX17.MDH.all = 0;
 		ECanaMboxes.MBOX17.MDL.all = 0;
 		ECanaMboxes.MBOX17.MDH.all = MDH;
 		ECanaMboxes.MBOX17.MDL.all = MDL;
+		break;
 	case 18:
+		if(ECanaRegs.CANMD.bit.MD18 == 1) return 0;
 		ECanaMboxes.MBOX18.MDH.all = 0;
 		ECanaMboxes.MBOX18.MDL.all = 0;
 		ECanaMboxes.MBOX18.MDH.all = MDH;
 		ECanaMboxes.MBOX18.MDL.all = MDL;
+		break;
 	case 19:
+		if(ECanaRegs.CANMD.bit.MD19 == 1) return 0;
 		ECanaMboxes.MBOX19.MDH.all = 0;
 		ECanaMboxes.MBOX19.MDL.all = 0;
 		ECanaMboxes.MBOX19.MDH.all = MDH;
 		ECanaMboxes.MBOX19.MDL.all = MDL;
+		break;
 	case 20:
+		if(ECanaRegs.CANMD.bit.MD20 == 1) return 0;
 		ECanaMboxes.MBOX20.MDH.all = 0;
 		ECanaMboxes.MBOX20.MDL.all = 0;
 		ECanaMboxes.MBOX20.MDH.all = MDH;
 		ECanaMboxes.MBOX20.MDL.all = MDL;
+		break;
 	case 21:
+		if(ECanaRegs.CANMD.bit.MD21 == 1) return 0;
 		ECanaMboxes.MBOX21.MDH.all = 0;
 		ECanaMboxes.MBOX21.MDL.all = 0;
 		ECanaMboxes.MBOX21.MDH.all = MDH;
 		ECanaMboxes.MBOX21.MDL.all = MDL;
+		break;
 	case 22:
+		if(ECanaRegs.CANMD.bit.MD22 == 1) return 0;
 		ECanaMboxes.MBOX22.MDH.all = 0;
 		ECanaMboxes.MBOX22.MDL.all = 0;
 		ECanaMboxes.MBOX22.MDH.all = MDH;
 		ECanaMboxes.MBOX22.MDL.all = MDL;
+		break;
 	case 23:
+		if(ECanaRegs.CANMD.bit.MD23 == 1) return 0;
 		ECanaMboxes.MBOX23.MDH.all = 0;
 		ECanaMboxes.MBOX23.MDL.all = 0;
 		ECanaMboxes.MBOX23.MDH.all = MDH;
 		ECanaMboxes.MBOX23.MDL.all = MDL;
+		break;
 	case 24:
+		if(ECanaRegs.CANMD.bit.MD24 == 1) return 0;
 		ECanaMboxes.MBOX24.MDH.all = 0;
 		ECanaMboxes.MBOX24.MDL.all = 0;
 		ECanaMboxes.MBOX24.MDH.all = MDH;
 		ECanaMboxes.MBOX24.MDL.all = MDL;
+		break;
 	case 25:
+		if(ECanaRegs.CANMD.bit.MD25 == 1) return 0;
 		ECanaMboxes.MBOX25.MDH.all = 0;
 		ECanaMboxes.MBOX25.MDL.all = 0;
 		ECanaMboxes.MBOX25.MDH.all = MDH;
 		ECanaMboxes.MBOX25.MDL.all = MDL;
+		break;
 	case 26:
+		if(ECanaRegs.CANMD.bit.MD26 == 1) return 0;
 		ECanaMboxes.MBOX26.MDH.all = 0;
 		ECanaMboxes.MBOX26.MDL.all = 0;
 		ECanaMboxes.MBOX26.MDH.all = MDH;
 		ECanaMboxes.MBOX26.MDL.all = MDL;
+		break;
 	case 27:
+		if(ECanaRegs.CANMD.bit.MD27 == 1) return 0;
 		ECanaMboxes.MBOX27.MDH.all = 0;
 		ECanaMboxes.MBOX27.MDL.all = 0;
 		ECanaMboxes.MBOX27.MDH.all = MDH;
 		ECanaMboxes.MBOX27.MDL.all = MDL;
+		break;
 	case 28:
+		if(ECanaRegs.CANMD.bit.MD28 == 1) return 0;
 		ECanaMboxes.MBOX28.MDH.all = 0;
 		ECanaMboxes.MBOX28.MDL.all = 0;
 		ECanaMboxes.MBOX28.MDH.all = MDH;
 		ECanaMboxes.MBOX28.MDL.all = MDL;
+		break;
 	case 29:
+		if(ECanaRegs.CANMD.bit.MD29 == 1) return 0;
 		ECanaMboxes.MBOX29.MDH.all = 0;
 		ECanaMboxes.MBOX29.MDL.all = 0;
 		ECanaMboxes.MBOX29.MDH.all = MDH;
 		ECanaMboxes.MBOX29.MDL.all = MDL;
+		break;
 	case 30:
+		if(ECanaRegs.CANMD.bit.MD30 == 1) return 0;
 		ECanaMboxes.MBOX30.MDH.all = 0;
 		ECanaMboxes.MBOX30.MDL.all = 0;
 		ECanaMboxes.MBOX30.MDH.all = MDH;
 		ECanaMboxes.MBOX30.MDL.all = MDL;
+		break;
 	case 31:
+		if(ECanaRegs.CANMD.bit.MD31 == 1) return 0;
 		ECanaMboxes.MBOX31.MDH.all = 0;
 		ECanaMboxes.MBOX31.MDL.all = 0;
 		ECanaMboxes.MBOX31.MDH.all = MDH;
 		ECanaMboxes.MBOX31.MDL.all = MDL;
+		break;
 	default:
 		result = 0;
 	}

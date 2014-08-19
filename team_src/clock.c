@@ -12,6 +12,8 @@ clock_struct Clock_Ticks = CLOCK_TICKS_CLEAR;
 void ClockSetup()
 {
 	SystemClockSetup(&Clock_Ticks);
+	InitializeCpuTimer2(1000000);
+	StartCpuTimer2();
 }
 
 // Connected to INT13 of CPU (use MINT13 mask):
@@ -40,4 +42,10 @@ __interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
 	DINT;
 }
 
+__interrupt void INT14_ISR(void)     // INT14 or CPU-Timer2
+{
+  // Insert ISR Code here
+
+	RestartCpuTimer2();
+}
 
