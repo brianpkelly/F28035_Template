@@ -12,21 +12,21 @@ clock_struct Clock_Ticks = CLOCK_TICKS_CLEAR;
 void ClockSetup()
 {
 	SystemClockSetup(&Clock_Ticks);
-	InitializeCpuTimer2(1000000);
+	InitializeCpuTimer2(500000);
 	StartCpuTimer2();
 }
 
-// Connected to INT13 of CPU (use MINT13 mask):
+
+// Connected to INT14 of CPU (use MINT14 mask):
 // ISR can be used by the user.
-__interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
+__interrupt void INT14_ISR(void)     // INT14 or CPU-Timer2
 {
-	 //***********************************WARNING!!********************************************\\
+	//***********************************WARNING!!********************************************\\
 	//BE CAREFUL YOU NEED TO ALLOW NESTING FOR ANY INTERRUPT THAT MIGHT HAPPEN IN THIS INTERRUPT\\
 
 	 EINT;		//enable all interrupts
 
 	//todo USER: Define Clock ISR
-	ClockHeartbeat();
 
 	Clock_Ticks.DataOut++;
 
@@ -38,14 +38,8 @@ __interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
 		Clock_Ticks.DataOut = 0;
 	}
 
-	RestartCPUTimer1();
-	DINT;
-}
-
-__interrupt void INT14_ISR(void)     // INT14 or CPU-Timer2
-{
-  // Insert ISR Code here
-
 	RestartCpuTimer2();
+	DINT;
+
 }
 

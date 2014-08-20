@@ -9,11 +9,10 @@
 
 struct CPUTIMER_VARS clock;
 struct CPUTIMER_VARS CPUTimer2;
-clock_struct *ClockTicks_Ref;
+system_clock_struct Sys_ClockTicks;
 
-void SystemClockSetup(clock_struct *ticks)
+void SystemClockSetup()
 {
-	ClockTicks_Ref = ticks;
 	clock.RegsAddr = &CpuTimer1Regs;
 	// Initialize timer period to maximum:
 	CpuTimer1Regs.PRD.all  = 0xFFFFFFFF;
@@ -27,7 +26,7 @@ void SystemClockSetup(clock_struct *ticks)
 	// Reset interrupt counters:
 	clock.InterruptCount = 0;
 
-	ConfigCpuTimer(&clock,CPU_FREQ_MHZ, CLOCK_PERIOD);
+	ConfigCpuTimer(&clock,CPU_FREQ_MHZ, SYSTEM_CLOCK_PERIOD);
 
 	//pie interrupt
 	IER |= M_INT13;
@@ -71,11 +70,11 @@ void InitializeCpuTimer2(float clock_period)
 
 void ClockHeartbeat()
 {
-	ClockTicks_Ref->HeartBeat++;
-	if (ClockTicks_Ref->HeartBeat >= HEARTBEAT_TICKS)
+	Sys_ClockTicks.HeartBeat++;
+	if (Sys_ClockTicks.HeartBeat >= HEARTBEAT_TICKS)
 	{
 		HeartBeat();
-		ClockTicks_Ref->HeartBeat = 0;
+		Sys_ClockTicks.HeartBeat = 0;
 	}
 }
 
@@ -94,4 +93,19 @@ void RestartCpuTimer2()
 void HeartBeat()
 {
 	FillSendCAN(HEARTBEAT_BOX);
+}
+
+// Connected to INT13 of CPU (use MINT13 mask):
+// ISR can be used by the system only.
+__interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
+{
+	 //***********************************WARNING!!********************************************\\
+	//BE CAREFUL YOU NEED TO ALLOW NESTING FOR ANY INTERRUPT THAT MIGHT HAPPEN IN THIS INTERRUPT\\
+
+	EINT;		//enable all interrupts
+
+	ClockHeartbeat();
+
+	RestartCPUTimer1();
+	DINT;
 }
