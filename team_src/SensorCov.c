@@ -8,15 +8,15 @@
 #include "all.h"
 
 
-sys_ops_struct ops_temp;
-sys_data_struct data_temp;
+user_ops_struct ops_temp;
+user_data_struct data_temp;
 
 void SensorCov()
 {
 	SensorCovInit();
-	while (ops.State == STATE_SENSOR_COV)
+	while (sys_ops.State == STATE_SENSOR_COV)
 	{
-		LatchStruct(&ops_temp, &data_temp);
+		LatchStruct();
 		SensorCovMeasure();
 		UpdateStruct();
 		FillCANData();
@@ -27,7 +27,7 @@ void SensorCov()
 void SensorCovInit()
 {
 	//todo USER: SensorCovInit()
-	SystemSensorInit(&ops_temp, &data_temp);
+	SystemSensorInit();
 }
 
 
@@ -36,12 +36,42 @@ void SensorCovMeasure()
 	SensorCovSystemInit();
 
 	readADC();
-	PerformSystemMeasurements();
 	//todo USER: Sensor Conversion
 	//update data_temp and ops_temp
 	//use stopwatch to catch timeouts
 	//waiting should poll isStopWatchComplete() to catch timeout and throw StopWatchError
+	data_temp.adc = A0RESULT;
+	data_temp.gp_button = READGPBUTTON();
 
+	if (data_temp.gp_button == 0) 			//if pushed cause stopwatch
+	{
+		SETLED0();
+		int i = 0;
+		while (i < 100)
+		{
+			i++;
+		}
+	}
+	else
+	{
+		CLEARLED0();
+	}
+	if (data_temp.adc > 2000)
+	{
+		SETLED1();
+	}
+	else
+	{
+		CLEARLED1();
+	}
+	PerformSystemChecks();
+}
+
+void LatchStruct()
+{
+	LatchSystemStruct();
+	ops_temp = user_ops;
+	data_temp = user_data;
 }
 
 void UpdateStruct()

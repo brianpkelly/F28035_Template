@@ -15,11 +15,19 @@
 //todo User: add user flags
 typedef struct USER_FLAGS
 {
-	char user_error : 1;
+	unsigned char user_error : 1;
 } user_flags_struct;
 
-typedef struct USER_OPS
+
+typedef struct USER_OPERATIONS
 {
-	char user_op;
-} user_ops;
+  char user_op;
+
+  union UserFlags
+  {
+	  int						all;
+	  user_flags_struct			bit;
+  }								UserFlags;
+} user_ops_struct;
+
 #endif /* OP_H_ */

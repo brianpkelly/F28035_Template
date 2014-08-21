@@ -23,23 +23,14 @@ typedef struct SYS_FLAGS
 	unsigned char can_error : 1;
 }sys_flags_struct;
 
-typedef struct OPERATIONS
+typedef struct SYS_OPS
 {
-  unsigned long State;
-  user_ops user_ops;
-
-  union UserFlags
-  {
-	  int						all;
-	  user_flags_struct			bit;
-  }								UserFlags;
-  union SystemFlags
-  {
+	unsigned long State;
+	union SystemFlags
+	{
 	  int 						all;
 	  sys_flags_struct			bit;
-  }								SystemFlags;
-
-
+	}								SystemFlags;
 } sys_ops_struct;
 
 #endif /* SYS_OP_H_ */

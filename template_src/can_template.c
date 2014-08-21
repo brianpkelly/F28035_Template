@@ -4,8 +4,8 @@
  *  Created on: May 17, 2014
  *      Author: Sean
  */
-#include "can_template.h"
 #include "all.h"
+
 
 struct ECAN_REGS *SystemShadow;
 stopwatch_struct* can_watch;
@@ -192,54 +192,24 @@ unsigned int getMailboxNR()
 	mailbox_nr = SystemShadow->CANGIF1.bit.MIV1;
 	return mailbox_nr;
 }
-char FillSystemBoxes(unsigned int Mbox)
+char FillHeartbeat(unsigned int Mbox, unsigned int userFlags)
 {
-	switch (Mbox)								//choose mailbox
-	{
-	case HEARTBEAT_BOX:
-		//todo Nathan define heartbeat
+	if(Mbox == HEARTBEAT_BOX) {
 		EALLOW;
-		SystemShadow->CANMC.bit.MBNR = Mbox;
+		SystemShadow->CANMC.bit.MBNR = HEARTBEAT_BOX;
 		SystemShadow->CANMC.bit.CDR = 1;
 		ECanaRegs.CANMC.all = SystemShadow->CANMC.all;
 		ECanaMboxes.MBOX1.MDH.all = 0;
 		ECanaMboxes.MBOX1.MDL.all = 0;
-		ECanaMboxes.MBOX1.MDH.all = ops.UserFlags.all;
-		ECanaMboxes.MBOX1.MDL.all = ops.SystemFlags.all;
+		ECanaMboxes.MBOX1.MDH.all = userFlags;
+		ECanaMboxes.MBOX1.MDL.all = sys_ops.SystemFlags.all;
 		SystemShadow->CANMC.bit.MBNR = 0;
 		SystemShadow->CANMC.bit.CDR = 0;
 		ECanaRegs.CANMC.all = SystemShadow->CANMC.all;
 		EDIS;
 		return 1;
-	/*
-	case ADC_BOX:
-		EALLOW;
-		SystemShadow->CANMC.bit.MBNR = Mbox;
-		SystemShadow->CANMC.bit.CDR = 1;
-		ECanaRegs.CANMC.all = SystemShadow->CANMC.all;
-		ECanaMboxes.MBOX2.MDH.all = 0;
-		ECanaMboxes.MBOX2.MDL.all = 0;
-		ECanaMboxes.MBOX2.MDL.all = data.adc;
-		SystemShadow->CANMC.bit.CDR = 0;
-		SystemShadow->CANMC.bit.MBNR = 0;
-		ECanaRegs.CANMC.all = SystemShadow->CANMC.all;
-		EDIS;
-		return 1;
-	case GP_BUTTON_BOX:
-		EALLOW;
-		SystemShadow->CANMC.bit.MBNR = Mbox;
-		SystemShadow->CANMC.bit.CDR = 1;
-		ECanaRegs.CANMC.all = SystemShadow->CANMC.all;
-		ECanaMboxes.MBOX3.MDH.all = 0;
-		ECanaMboxes.MBOX3.MDL.all = 0;
-		ECanaMboxes.MBOX3.MDL.all = data.gp_button;
-		SystemShadow->CANMC.bit.CDR = 0;
-		SystemShadow->CANMC.bit.MBNR = 0;
-		ECanaRegs.CANMC.all = SystemShadow->CANMC.all;
-		EDIS;
-		return 1;
-	*/
-	default:
+	}
+	else {
 		return 0;
 	}
 }
@@ -278,10 +248,10 @@ void ReadCommand()
 	switch (ops_id)
 	{
 	case OPS_ID_STATE:
-		memcpy(&ops.State,&dummy,sizeof ops.State);
+		memcpy(&sys_ops.State,&dummy,sizeof sys_ops.State);
 		break;
 	case OPS_ID_STOPWATCHERROR:
-		memcpy(&ops.SystemFlags.all,&dummy,sizeof ops.SystemFlags.all);
+		memcpy(&sys_ops.SystemFlags.all,&dummy,sizeof sys_ops.SystemFlags.all);
 		break;
 	}
 	SystemShadow->CANRMP.bit.RMP0 = 1;
@@ -299,11 +269,11 @@ void CheckForFlags()
 	//recommended USER: Check for stopwatch flag to determine if there's a CAN error
 	if (isStopWatchComplete(can_watch) == 1)					//if stopwatch flag
 	{
-		ops.SystemFlags.bit.can_error = 1;
+		sys_ops.SystemFlags.bit.can_error = 1;
 	}
-	else if (ops.SystemFlags.bit.can_error == 1)		//if no stopwatch and flagged reset
+	else if (sys_ops.SystemFlags.bit.can_error == 1)		//if no stopwatch and flagged reset
 	{
-		ops.SystemFlags.bit.can_error = 0;
+		sys_ops.SystemFlags.bit.can_error = 0;
 	}
 	EDIS;
 }

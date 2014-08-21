@@ -7,14 +7,13 @@
 
 #include "all.h"
 
+
 sys_ops_struct *ops_temp_sys, sc_start_ops;
 sys_data_struct *data_temp_sys;
 stopwatch_struct* conv_watch_in_sys;
 
-void SystemSensorInit(sys_ops_struct *ops_pointer, sys_data_struct *data_pointer)
+void SystemSensorInit()
 {
-	ops_temp_sys = ops_pointer;
-	data_temp_sys = data_pointer;
 	//CONFIG ADC
 	adcinit();
 	//CONFIG GP_BUTTON
@@ -37,47 +36,22 @@ void SystemSensorDeInit()
 	CLEAR12V();
 }
 
-void LatchStruct()
+void LatchSystemStruct()
 {
-	memcpy(ops_temp_sys, &ops, sizeof(struct OPERATIONS));
-	memcpy(data_temp_sys, &data, sizeof(struct SYSTEM_DATA));
+	memcpy(ops_temp_sys, &sys_ops, sizeof(struct SYS_OPS));
+	memcpy(data_temp_sys, &sys_data, sizeof(struct SYSTEM_DATA));
 }
 
 void SensorCovSystemInit()
 {
-	memcpy(&sc_start_ops, ops_temp_sys, sizeof(struct OPERATIONS));
+	memcpy(&sc_start_ops, ops_temp_sys, sizeof(struct SYS_OPS));
 	StopWatchRestart(conv_watch_in_sys);
 }
 
-void PerformSystemMeasurements(stopwatch_struct *watch)
+void PerformSystemChecks()
 {
-	data_temp_sys->adc = A0RESULT;
-
-	data_temp_sys->gp_button = READGPBUTTON();
-
-	if (data_temp_sys->gp_button == 0) 			//if pushed cause stopwatch
-	{
-		SETLED0();
-		int i = 0;
-		while (i < 100)
-		{
-			i++;
-		}
-	}
-	else
-	{
-		CLEARLED0();
-	}
-	if (data_temp_sys->adc > 2000)
-	{
-		SETLED1();
-	}
-	else
-	{
-		CLEARLED1();
-	}
 	//exit and stopwatch error if timeout
-	if (isStopWatchComplete(watch) == 1)
+	if (isStopWatchComplete(conv_watch_in_sys) == 1)
 	{
 		ops_temp_sys->SystemFlags.bit.cov_error = 1;
 	}
@@ -85,7 +59,6 @@ void PerformSystemMeasurements(stopwatch_struct *watch)
 	{
 		ops_temp_sys->SystemFlags.bit.cov_error = 0;
 	}
-
 
 	if (ops_temp_sys->SystemFlags.all != 0)
 	{
@@ -99,20 +72,20 @@ void PerformSystemMeasurements(stopwatch_struct *watch)
 
 void SaveOpStates()
 {
-	memcpy(&data, data_temp_sys, sizeof(struct SYSTEM_DATA));
+	memcpy(&sys_data, data_temp_sys, sizeof(struct SYSTEM_DATA));
 }
 
 void DetermineOpStates()
 {
-	if(sc_start_ops.State == ops.State)
+	if(sc_start_ops.State == sys_ops.State)
 	{
-		ops.State = ops_temp_sys->State;
+		sys_ops.State = ops_temp_sys->State;
 	}
 
-	if(sc_start_ops.SystemFlags.all == ops.SystemFlags.all)
+	if(sc_start_ops.SystemFlags.all == sys_ops.SystemFlags.all)
 	{
 		//only cov error happens inside of conversion so all other changes are considered correct.
 		//update accordingly to correct cov_errors
-		ops.SystemFlags.bit.cov_error = ops_temp_sys->SystemFlags.bit.cov_error;
+		sys_ops.SystemFlags.bit.cov_error = ops_temp_sys->SystemFlags.bit.cov_error;
 	}
 }

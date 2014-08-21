@@ -8,8 +8,8 @@
 #include "all.h"
 
 
-sys_ops_struct ops;
-sys_data_struct data;
+user_ops_struct user_ops;
+user_data_struct user_data;
 
 void Initialize()
 {
@@ -29,6 +29,7 @@ void DataSetup()
 {
 	//todo USER: DataSetup()
 	//add here and data.h
-	SetupDataOperations();
+	user_data.adc = 0;
+	user_data.gp_button = 0;
 }
 

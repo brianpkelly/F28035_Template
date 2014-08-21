@@ -6,6 +6,9 @@
  */
 #include "all.h"
 
+sys_ops_struct sys_ops;
+sys_data_struct sys_data;
+
 void SystemInit(float time)
 {
 	CANSetup();
@@ -16,12 +19,7 @@ void SystemInit(float time)
 
 void SetupSystemOperations()
 {
-	ops.SystemFlags.all = 0;
-	ops.State = STATE_SENSOR_COV;
+	sys_ops.SystemFlags.all = 0;
+	sys_ops.State = STATE_SENSOR_COV;
 }
 
-void SetupDataOperations()
-{
-	data.adc = 0;
-	data.gp_button = 0;
-}

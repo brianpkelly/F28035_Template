@@ -9,9 +9,9 @@
 #define SENSORCOV_H_
 
 void SensorCov();
-
 void SensorCovInit();
 void SensorCovMeasure();
+void LatchStruct();
 void UpdateStruct();
 void SensorCovDeInit();
 

@@ -8,8 +8,6 @@
 #ifndef GPIO_H_
 #define GPIO_H_
 
-
-
 #define 	CLEARLED0()				GpioDataRegs.GPACLEAR.bit.GPIO29 = 1
 #define		SETLED0()				GpioDataRegs.GPASET.bit.GPIO29 = 1
 #define 	TOGGLELED0()			GpioDataRegs.GPATOGGLE.bit.GPIO29 = 1
@@ -28,9 +26,6 @@ void ConfigGPButton();
 void Config12V();
 void ConfigLED1();
 void ConfigLED0();
-
-
-
 
 
 #endif /* GPIO_H_ */

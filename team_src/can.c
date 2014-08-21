@@ -45,17 +45,17 @@ char FillCAN(unsigned int Mbox)
 	CopyMCToShadow(&ECanaShadow);
 
 	//Try to fill heartbeat. If not heartbeat mailbox, see if it's a user mailbox
-	if(FillSystemBoxes(Mbox) != 1)
+	if(FillHeartbeat(Mbox, user_ops.UserFlags.all) != 1)
 	{
 		//todo USER: setup for all transmit MBOXs
 		//InsertCANMessage(int Mbox, unsigned int MDH, unsigned int MDL)
 		switch (Mbox)
 		{
 		case ADC_BOX:
-			InsertCANMessage(ADC_BOX, 0, data.adc);
+			InsertCANMessage(ADC_BOX, 0, user_data.adc);
 			return 1;
 		case GP_BUTTON_BOX:
-			InsertCANMessage(GP_BUTTON_BOX, 0, data.gp_button);
+			InsertCANMessage(GP_BUTTON_BOX, 0, user_data.gp_button);
 			return 1;
 		default:
 			return 0;

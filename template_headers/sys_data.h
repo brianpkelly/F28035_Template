@@ -10,8 +10,7 @@
 
 typedef struct SYSTEM_DATA
 {
-  unsigned long adc;
-  char gp_button;
+	char placeholder;
 } sys_data_struct;
 
 
