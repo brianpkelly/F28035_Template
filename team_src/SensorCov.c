@@ -77,7 +77,7 @@ void LatchStruct()
 void UpdateStruct()
 {
 	SaveOpStates();
-
+	user_data = data_temp;
 	//todo USER: UpdateStruct
 	//update with node specific op changes
 
