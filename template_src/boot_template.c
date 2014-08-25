@@ -26,7 +26,9 @@ Uint16 ConfNbr1 = 0x00CC;
 Uint16 ConfNbr2 = 0x00AA;
 
 
-
+/**
+ * Performs operations required to start the bootloader
+ */
 void Boot(Uint16 MesgID) {
 	DINT;
 	BootInit(MesgID);
@@ -64,7 +66,9 @@ void BootInit(Uint16 MesgID) {
 	CopyData();
 }
 
-// Handshake com protocol with CANcorder through bus
+/*
+ * Handshake com protocol with CANcorder through bus
+ */
 void Confirm(Uint16 MesgID, Uint16 conf) {
 	//struct MBOX MboxS; Having issues typematching MBOXs to mbox signals/messageIDs, etc.
 	//struct MBOX MboxR;

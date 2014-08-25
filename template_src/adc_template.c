@@ -5,11 +5,9 @@
 
 #include "all.h"
 
-/*
-
+/**
+ * ADC initialization statements for a MCN
  */
-
-
 void adcinit()
 {
 	InitAdc();  // Init the ADC
@@ -73,7 +71,9 @@ void adcinit()
 
 }
 
-
+/**
+ * Reads ADC output until the ADC interrupt triggers.
+ */
 void readADC()
 {
 	AdcRegs.ADCSOCFRC1.all = 0xFFFF; 	//all socs

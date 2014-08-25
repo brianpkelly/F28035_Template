@@ -11,7 +11,9 @@ struct ECAN_REGS *SystemShadow;
 stopwatch_struct* can_watch;
 unsigned long system_mask;
 
-
+/**
+ * Initializes CAN for a MCN
+ */
 void SystemCANInit(struct ECAN_REGS *UserShadow)
 {
 	EALLOW;
@@ -32,6 +34,11 @@ void SystemCANInit(struct ECAN_REGS *UserShadow)
 	EDIS;
 }
 
+/**
+ * Initializes the command CAN mailbox as mailbox 0.
+ *
+ * IMPORTANT: DO NOT REASSIGN MAILBOX 0
+ */
 void CommandBoxInit()
 {
 	EALLOW;
@@ -48,6 +55,11 @@ void CommandBoxInit()
 	EDIS;
 }
 
+/**
+ * Initializes the heartbeat CAN mailbox as mailbox 1
+ *
+ * IMPORTANT: DO NOT REASSIGN MAILBOX 1
+ */
 void HeartbeatBoxInit()
 {
 	EALLOW;
@@ -62,6 +74,10 @@ void HeartbeatBoxInit()
 	EDIS;
 }
 
+/**
+ * Finishes initializing the CAN interface. Should be called once all mailboxes
+ * have been defined and initialized.
+ */
 void FinishCANInit()
 {
 	EALLOW;
@@ -83,6 +99,9 @@ void FinishCANInit()
 	can_watch = StartStopWatch(SENDCAN_STOPWATCH);
 }
 
+/**
+ * Clears the data in all 32 available mailboxes
+ */
 void ClearMailBoxes()
 {
 	ECanaMboxes.MBOX0.MDH.all = 0;
@@ -151,7 +170,9 @@ void ClearMailBoxes()
 }
 
 
-
+/**
+ * NOT NEEDED?? RELIES ON USER FUNCTION
+ */
 void FillSendCAN(unsigned Mbox)
 {
 	if (FillCAN(Mbox) == 1)
@@ -160,7 +181,9 @@ void FillSendCAN(unsigned Mbox)
 	}
 }
 
-
+/**
+ *
+ */
 void BUS_OFF()
 {
     EALLOW;
@@ -185,6 +208,9 @@ void CopyMCToShadow(struct ECAN_REGS *SystemShadow)
 	SystemShadow->CANMC.all = ECanaRegs.CANMC.all;
 }
 
+/**
+ * Determines the mailbox number a received message was placed into
+ */
 unsigned int getMailboxNR()
 {
 	SystemShadow->CANGIF1.bit.MIV1 =  ECanaRegs.CANGIF1.bit.MIV1;
@@ -192,6 +218,11 @@ unsigned int getMailboxNR()
 	mailbox_nr = SystemShadow->CANGIF1.bit.MIV1;
 	return mailbox_nr;
 }
+
+/**
+ * If the Mbox parameter matches the mailbox number, the heartbeat mailbox is filled
+ * with the system and users flags passed into the function
+ */
 char FillHeartbeat(unsigned int Mbox, unsigned int userFlags)
 {
 	if(Mbox == HEARTBEAT_BOX) {
@@ -214,6 +245,9 @@ char FillHeartbeat(unsigned int Mbox, unsigned int userFlags)
 	}
 }
 
+/**
+ * Checks to determine if the bus-off condition has been triggered
+ */
 void CheckBusOff()
 {
 	if (SystemShadow->CANMC.bit.CCR == 1)
@@ -222,6 +256,10 @@ void CheckBusOff()
 	}
 }
 
+/**
+ * Keeps track of the mailboxes with data that needs to be sent. The Mbox
+ * passed into the function is the mailbox number which has data ready to be sent.
+ */
 void CreateMask(unsigned int Mbox)
 {
 	// 1UL so there's a mask for at least 32 mailboxes
@@ -233,7 +271,10 @@ void CreateMask(unsigned int Mbox)
 
 }
 
-
+/**
+ * Reads an incoming command frame and changes the system state and flags
+ * depending on the incoming message contents
+ */
 void ReadCommand()
 {
 	Uint32 ops_id;
@@ -278,6 +319,9 @@ void CheckForFlags()
 	EDIS;
 }
 
+/**
+ * Starts sending mailboxes that have been flagged in the mask
+ */
 void BeginTransmission()
 {
 	//todo Nathan: calibrate sendcan stopwatch
