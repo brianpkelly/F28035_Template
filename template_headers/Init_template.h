@@ -9,8 +9,6 @@
 #define INIT_TEMPLATE_H_
 
 
-void SystemInit(float time);
 void SetupSystemOperations();
-void SetupDataOperations();
 
 #endif /* INIT_TEMPLATE_H_ */

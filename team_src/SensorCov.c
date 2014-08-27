@@ -13,7 +13,7 @@ user_data_struct data_temp;
 
 void SensorCov()
 {
-	SensorCovInit();
+	SensorCovInit(4);
 	while (sys_ops.State == STATE_SENSOR_COV)
 	{
 		LatchStruct();

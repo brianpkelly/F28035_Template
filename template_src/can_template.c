@@ -13,6 +13,8 @@ unsigned long system_mask;
 
 /**
  * Initializes CAN for a MCN
+ *     UserShadow - A shadow register the user is using in order to modify
+ *     the MCN registers.
  */
 void SystemCANInit(struct ECAN_REGS *UserShadow)
 {
@@ -170,19 +172,9 @@ void ClearMailBoxes()
 }
 
 
-/**
- * NOT NEEDED?? RELIES ON USER FUNCTION
- */
-void FillSendCAN(unsigned Mbox)
-{
-	if (FillCAN(Mbox) == 1)
-	{
-		SendCAN(Mbox);
-	}
-}
 
 /**
- *
+ * Restarts the CAN module to be BUS_ON
  */
 void BUS_OFF()
 {
@@ -202,14 +194,18 @@ void BUS_OFF()
     EDIS;
 }
 
-//todo SEAN: Test whether this is correct
-void CopyMCToShadow(struct ECAN_REGS *SystemShadow)
+/**
+ * Copies the current MCN registers to shadow registers that can be modified freely.
+ */
+void CopyMCToShadow()
 {
 	SystemShadow->CANMC.all = ECanaRegs.CANMC.all;
 }
 
 /**
  * Determines the mailbox number a received message was placed into
+ *
+ * Returns: The mailbox number the received message was placed into
  */
 unsigned int getMailboxNR()
 {
@@ -222,6 +218,12 @@ unsigned int getMailboxNR()
 /**
  * If the Mbox parameter matches the mailbox number, the heartbeat mailbox is filled
  * with the system and users flags passed into the function
+ *      Mbox: Current mailbox to be filled. This mailbox is checked against the heartbeat
+ *      mailbox # to determine if the mailbox passed should be filled with the heartbeat message
+ *      userFlags: User defined flags to send in the heartbeat
+ *
+ * Returns 1 if the heartbeat was placed into the mailbox and 0 if the Mbox did not match
+ * the heartbeat box number.
  */
 char FillHeartbeat(unsigned int Mbox, unsigned int userFlags)
 {
@@ -245,6 +247,7 @@ char FillHeartbeat(unsigned int Mbox, unsigned int userFlags)
 	}
 }
 
+
 /**
  * Checks to determine if the bus-off condition has been triggered
  */
@@ -259,6 +262,7 @@ void CheckBusOff()
 /**
  * Keeps track of the mailboxes with data that needs to be sent. The Mbox
  * passed into the function is the mailbox number which has data ready to be sent.
+ *      Mbox: mailbox to add to the current list of mailboxes to send
  */
 void CreateMask(unsigned int Mbox)
 {
@@ -298,6 +302,10 @@ void ReadCommand()
 	SystemShadow->CANRMP.bit.RMP0 = 1;
 }
 
+/**
+ * Checks to determine whether the sensor conversion took longer than the time passed
+ * to the SystemSensorInit function. If so, a system CAN flag is set to 1.
+ */
 void CheckForFlags()
 {
 	EALLOW;

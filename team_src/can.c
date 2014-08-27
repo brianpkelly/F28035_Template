@@ -72,9 +72,7 @@ char FillCAN(unsigned int Mbox)
 //is no longer available
 void SendCAN(unsigned int Mbox)
 {
-	// Check for bus off
-	CopyMCToShadow(&ECanaShadow);
-	//ECanaShadow.CANMC.all = ECanaRegs.CANMC.all;
+	CopyMCToShadow();
 	CheckBusOff();
 	CreateMask(Mbox);
 

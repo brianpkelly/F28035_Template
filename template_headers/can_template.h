@@ -22,14 +22,12 @@ struct TRS_REG {
 void SystemCANInit(struct ECAN_REGS *UserShadow);
 void CommandBoxInit();
 void HeartbeatBoxInit();
-void ADCBoxInit();
-void GPButtonBoxInit();
 void FinishCANInit();
 void ClearMailBoxes();
 void FillSendCAN(unsigned int Mbox);
 void SendMailBoxes(unsigned int Mbox);
 void BUS_OFF();
-void CopyMCToShadow(struct ECAN_REGS *ECanaShadow);
+void CopyMCToShadow();
 unsigned int getMailboxNR();
 char FillHeartbeat(unsigned int Mbox, unsigned int userFlags);
 void CheckBusOff();

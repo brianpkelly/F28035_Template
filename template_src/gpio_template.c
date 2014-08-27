@@ -7,6 +7,9 @@
 
 #include "all.h"
 
+/**
+ * Configures the GPIO pin 29 to control LED0.
+ */
 void ConfigLED0()
 {
 	EALLOW;
@@ -18,6 +21,9 @@ void ConfigLED0()
 	EDIS;
 }
 
+/**
+ * Configures the GPIO pin 9 to control LED1.
+ */
 void ConfigLED1()
 {
 	EALLOW;
@@ -29,6 +35,9 @@ void ConfigLED1()
 	EDIS;
 }
 
+/**
+ * Configures the GPIO pin 20 to control 12V.
+ */
 void Config12V()
 {
 	EALLOW;
@@ -40,6 +49,9 @@ void Config12V()
 	EDIS;
 }
 
+/**
+ * Configures the GPIO pin 21 to the GPIO button.
+ */
 void ConfigGPButton()
 {
 	EALLOW;

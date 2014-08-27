@@ -18,7 +18,7 @@
 //###########################################################################
 
 
-#include "Boot.h"
+#include "boot_template.h"
 #include "SharedBoot_template.h"
 #include "Flash2803x_API_Library.h"
 

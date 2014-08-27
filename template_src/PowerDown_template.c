@@ -7,26 +7,33 @@
 
 #include "all.h"
 
+/**
+ * Performs system specifi
+ */
 void SystemPowerDown()
 {
-	NodePowerDown();
 	while(isPowerOn() == 0) {}
-	Restart();
+	EALLOW;
+	SysCtrlRegs.WDCR = 0x0028;               // Enable watchdog module
+	SysCtrlRegs.WDKEY = 0x00;                // wrong key should restart
+	SysCtrlRegs.WDKEY = 0x00;
+	EDIS;
+
+	while(1){}
 }
 
-void NodePowerDown()
-{
-	//todo NATHAN: special node power down
-	DINT;				// disable interrupts
-}
-
+/**
+ * Returns whether there is power. A returned value of 1 corresponds to no power
+ * and a returned value of 0 means there is power.
+ */
 char isPowerOn()
 {
 	return !Comp3Regs.COMPSTS.bit.COMPSTS; 	// 1 means cause interrupt = no power
-											// 0 = power
-											//to correspond to True False invert
 }
 
+/**
+ * Initializes a interrupt to trigger once the input voltage has dropped too low.
+ */
 void PowerDownISRSetup()
 {
 	InitComp3Gpio();
@@ -55,6 +62,9 @@ void PowerDownISRSetup()
 	EDIS;
 }
 
+/**
+ * Starts the power down interrupt
+ */
 void StartPowerDownInt()
 {
 	EALLOW;

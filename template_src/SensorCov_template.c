@@ -16,7 +16,7 @@ stopwatch_struct* conv_watch_in_sys;
  * Sets up the ADC, GPIO button, and LEDs. Also sets up the timer to determine if a conversion
  * took too long.
  */
-void SystemSensorInit()
+void SystemSensorInit(unsigned int time)
 {
 	//CONFIG ADC
 	adcinit();
@@ -29,11 +29,11 @@ void SystemSensorInit()
 	ConfigLED1();
 	//CONFIG 12V SWITCH
 	Config12V();
-	conv_watch_in_sys = StartStopWatch(4);
+	conv_watch_in_sys = StartStopWatch(time);
 }
 
 /**
- * Turns off the LEDs and clears... 12V?
+ * Turns off the LEDs and 12V
  */
 void SystemSensorDeInit()
 {

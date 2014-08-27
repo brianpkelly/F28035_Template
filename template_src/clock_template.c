@@ -68,12 +68,12 @@ void InitializeCpuTimer2(float clock_period)
 	//StartCpuTimer2();
 }
 
-void ClockHeartbeat()
+void ClockHeartbeat(int userFlags)
 {
 	Sys_ClockTicks.HeartBeat++;
 	if (Sys_ClockTicks.HeartBeat >= HEARTBEAT_TICKS)
 	{
-		HeartBeat();
+		HeartBeat(userFlags);
 		Sys_ClockTicks.HeartBeat = 0;
 	}
 }
@@ -90,22 +90,9 @@ void RestartCpuTimer2()
 	StartCpuTimer2();
 }
 
-void HeartBeat()
+void HeartBeat(int userFlags)
 {
-	FillSendCAN(HEARTBEAT_BOX);
+	FillHeartbeat(HEARTBEAT_BOX, userFlags);
 }
 
-// Connected to INT13 of CPU (use MINT13 mask):
-// ISR can be used by the system only.
-__interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
-{
-	 //***********************************WARNING!!********************************************\\
-	//BE CAREFUL YOU NEED TO ALLOW NESTING FOR ANY INTERRUPT THAT MIGHT HAPPEN IN THIS INTERRUPT\\
 
-	EINT;		//enable all interrupts
-
-	ClockHeartbeat();
-
-	RestartCPUTimer1();
-	DINT;
-}

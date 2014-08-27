@@ -9,14 +9,9 @@
 sys_ops_struct sys_ops;
 sys_data_struct sys_data;
 
-void SystemInit(float time)
-{
-	CANSetup();
-	ClockSetup();
-	StartPowerDownInt();			//start power down interrupt, this will change state to PowerDown if necessary
-	StopWatchSetUp(time);
-}
-
+/**
+ * Initializes system flags and state.
+ */
 void SetupSystemOperations()
 {
 	sys_ops.SystemFlags.all = 0;

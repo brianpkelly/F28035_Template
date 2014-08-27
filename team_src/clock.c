@@ -16,6 +16,19 @@ void ClockSetup()
 	StartCpuTimer2();
 }
 
+// Connected to INT13 of CPU (use MINT13 mask):
+__interrupt void INT13_ISR(void)     // INT13 or CPU-Timer1
+{
+	 //***********************************WARNING!!********************************************\\
+	//BE CAREFUL YOU NEED TO ALLOW NESTING FOR ANY INTERRUPT THAT MIGHT HAPPEN IN THIS INTERRUPT\\
+
+	EINT;		//enable all interrupts
+
+	ClockHeartbeat(user_ops.UserFlags.all);
+
+	RestartCPUTimer1();
+	DINT;
+}
 
 // Connected to INT14 of CPU (use MINT14 mask):
 // ISR can be used by the user.
