@@ -78,8 +78,17 @@ extern  Uint16 EmuBMode;
 #define Device_cal (void   (*)(void))0x3D7C80
 #define Get_mode   (Uint16 (*)(void))0x3D7CC0
 
+/**
+ * Performs operations required to start the bootloader
+ */
 void Boot(Uint16);
+
+
 void BootInit(Uint16);
+
+/**
+ * Handshake com protocol with CANcorder through bus
+ */
 void Confirm(Uint16, Uint16);
 void Boot_Restart();
 Uint16 BC_CAN_GetWordData();

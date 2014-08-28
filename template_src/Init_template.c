@@ -9,9 +9,6 @@
 sys_ops_struct sys_ops;
 sys_data_struct sys_data;
 
-/**
- * Initializes system flags and state.
- */
 void SetupSystemOperations()
 {
 	sys_ops.SystemFlags.all = 0;

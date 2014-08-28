@@ -35,14 +35,6 @@ void SystemClockSetup()
 	StartCpuTimer1();
 }
 
-/*
- * Initializes CPU timer 2 and enables the timer to trigger interrupt 14.
- * In order to start the timer, the user must call the function StartCpuTimer2()
- * or RestartCpuTimer2()
- *
- * Parameters:
- * 		clock_period - period of timer in us
- */
 void InitializeCpuTimer2(float clock_period)
 {
 	CPUTimer2.RegsAddr = &CpuTimer2Regs;

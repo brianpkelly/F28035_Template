@@ -10,10 +10,6 @@
 
 struct CPUTIMER_VARS StopWatch;
 
-/**
- * Configures CPU0 to be used for all stopwatches.
- * 		time: period for the CPU clock in uSeconds
- */
 void StopWatchSetUp(float time)
 {
     // CPU Timer0
@@ -41,12 +37,6 @@ void StopWatchSetUp(float time)
 	StartCpuTimer0();
 }
 
-/**
- * Starts the stopwatch for x amount of seconds
- * 		time: time to run the stopwatch for in seconds.
- *
- * Returns a pointer to a new stopwatch with the corresponding end time.
- */
 stopwatch_struct* StartStopWatch(unsigned int time)
 {
 	stopwatch_struct* watch = (stopwatch_struct*)myMalloc(sizeof(stopwatch_struct));
@@ -56,20 +46,12 @@ stopwatch_struct* StartStopWatch(unsigned int time)
 	return watch;
 }
 
-/**
- * Restarts the stopwatch so that the time is 0.
- */
 void StopWatchRestart(stopwatch_struct* watch)
 {
 	watch->Start = StopWatch.InterruptCount;
 	watch->StopwatchComplete = 0;
 }
 
-/**
- * Checks whether the stopwatch has reached it's end time.
- *
- * Returns 1 if the stopwatch is complete and 0 if it isn't
- */
 char isStopWatchComplete(stopwatch_struct* watch)
 {
 	if((StopWatch.InterruptCount - watch->Start) >= watch->Time)
@@ -79,10 +61,6 @@ char isStopWatchComplete(stopwatch_struct* watch)
 	return watch->StopwatchComplete;
 }
 
-/**
- * Stops and destroys the stopwatch from memory. The stopwatch can no longer be used
- * after this function is called.
- */
 void StopStopWatch(stopwatch_struct* watch)
 {
 	myFree(watch);

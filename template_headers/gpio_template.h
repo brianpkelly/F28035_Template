@@ -22,9 +22,25 @@
 
 #define		READGPBUTTON()			GpioDataRegs.GPADAT.bit.GPIO21
 
+
+/**
+ * Configures the GPIO pin 21 to the GPIO button.
+ */
 void ConfigGPButton();
+
+/**
+ * Configures the GPIO pin 20 to control 12V.
+ */
 void Config12V();
+
+/**
+ * Configures the GPIO pin 9 to control LED1.
+ */
 void ConfigLED1();
+
+/**
+ * Configures the GPIO pin 29 to control LED0.
+ */
 void ConfigLED0();
 
 

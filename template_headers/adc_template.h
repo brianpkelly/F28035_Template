@@ -3,8 +3,14 @@
 #ifndef ADC_H_
 #define ADC_H_
 
-
+/**
+ * ADC initialization statements for a MCN
+ */
 void adcinit();
+
+/**
+ * Reads ADC output until the ADC interrupt triggers.
+ */
 void readADC();
 
 #define ACQPS_VALUE				20

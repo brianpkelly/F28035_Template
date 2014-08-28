@@ -12,10 +12,6 @@ sys_ops_struct ops_temp_sys, sc_start_ops;
 sys_data_struct data_temp_sys;
 stopwatch_struct* conv_watch_in_sys;
 
-/**
- * Sets up the ADC, GPIO button, and LEDs. Also sets up the timer to determine if a conversion
- * took too long.
- */
 void SystemSensorInit(unsigned int time)
 {
 	//CONFIG ADC
@@ -32,9 +28,6 @@ void SystemSensorInit(unsigned int time)
 	conv_watch_in_sys = StartStopWatch(time);
 }
 
-/**
- * Turns off the LEDs and 12V
- */
 void SystemSensorDeInit()
 {
 	StopStopWatch(conv_watch_in_sys);
@@ -43,34 +36,18 @@ void SystemSensorDeInit()
 	CLEAR12V();
 }
 
-/*
- * Latch System Struct
- */
 void LatchSystemStruct()
 {
 	memcpy(&ops_temp_sys, &sys_ops, sizeof(struct SYS_OPS));
 	memcpy(&data_temp_sys, &sys_data, sizeof(struct SYSTEM_DATA));
 }
 
-/**
- * Saves the current system_ops_struct data stored to later determine if a outside change
- * occurred during sensor conversion.
- *
- * It is strongly recommended to perform similar operations on all user data and ops before
- * starting a sensor conversion.
- */
 void SensorCovSystemInit()
 {
 	memcpy(&sc_start_ops, &ops_temp_sys, sizeof(struct SYS_OPS));
 	StopWatchRestart(conv_watch_in_sys);
 }
 
-/**
- * Determine if sensor conversion took too long to complete. If so, it triggers the system flag
- * cov_error and sets 12V.
- *
- * If a system flag is set, 12V is also set.
- */
 void PerformSystemChecks()
 {
 	//exit and stopwatch error if timeout
@@ -93,22 +70,11 @@ void PerformSystemChecks()
 	}
 }
 
-/**
- * Saves the sensor conversion system data into a long time sys_data_struct. Should be called after
- * the sensor conversion is complete.
- */
 void SaveOpStates()
 {
 	memcpy(&sys_data, &data_temp_sys, sizeof(struct SYSTEM_DATA));
 }
 
-/**
- * Determines the state of the MCN. If the state was changed during a sensor conversion, the MCN should
- * keep with that state change. If the state was not changed, the state determined in sensor conversion
- * should be applied.
- *
- * The check is done to system flags in this function.
- */
 void DetermineOpStates()
 {
 	if(sc_start_ops.State == sys_ops.State)

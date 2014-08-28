@@ -7,9 +7,6 @@
 
 #include "all.h"
 
-/**
- * Performs system specifi
- */
 void SystemPowerDown()
 {
 	while(isPowerOn() == 0) {}
@@ -22,18 +19,11 @@ void SystemPowerDown()
 	while(1){}
 }
 
-/**
- * Returns whether there is power. A returned value of 1 corresponds to no power
- * and a returned value of 0 means there is power.
- */
 char isPowerOn()
 {
 	return !Comp3Regs.COMPSTS.bit.COMPSTS; 	// 1 means cause interrupt = no power
 }
 
-/**
- * Initializes a interrupt to trigger once the input voltage has dropped too low.
- */
 void PowerDownISRSetup()
 {
 	InitComp3Gpio();
@@ -62,9 +52,6 @@ void PowerDownISRSetup()
 	EDIS;
 }
 
-/**
- * Starts the power down interrupt
- */
 void StartPowerDownInt()
 {
 	EALLOW;
