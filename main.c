@@ -5,7 +5,6 @@
  *      Author: Nathan
  */
 
-#include "Boot.h"
 #include "all.h"
 
 Uint16 MesgID = 5;
@@ -15,7 +14,7 @@ int main(void)
 	StartUp();
 	BootISRSetup();
 	PowerDownISRSetup();
-	ops.State = STATE_INIT;
+	sys_ops.State = STATE_INIT;
 	while(1)
 	{
 		NextState(MesgID);
@@ -24,10 +23,10 @@ int main(void)
 
 void NextState(Uint16 MesgID)
 {
-	switch (ops.State)
+	switch (sys_ops.State)
 	{
 	case STATE_INIT:
-		Initilize();
+		Initialize();
 		break;
 	case STATE_SENSOR_COV:
 		SensorCov();
@@ -39,7 +38,7 @@ void NextState(Uint16 MesgID)
 		PowerDown();
 		break;
 	default:
-		Initilize();
+		Initialize();
 	}
 }
 
@@ -98,17 +97,6 @@ void StartUp()
 
 	EINT;   // Enable Global interrupt INTM
 	ERTM;   // Enable Global realtime interrupt DBGM
-}
-
-void Restart()
-{
-	EALLOW;
-	SysCtrlRegs.WDCR = 0x0028;               // Enable watchdog module
-	SysCtrlRegs.WDKEY = 0x00;                // wrong key should restart
-	SysCtrlRegs.WDKEY = 0x00;
-	EDIS;
-
-	while(1){}
 }
 
 

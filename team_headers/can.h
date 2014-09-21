@@ -8,23 +8,8 @@
 #ifndef CAN_H_
 #define CAN_H_
 
-
-
-
-struct CANmsg {
-   char MBox;
-   union CANMSGCTRL_REG   MSGCTRL;
-   union CANMDL_REG       MDL;
-   union CANMDH_REG       MDH;
-};
-
-struct TRS_REG {
-	union CANTRS_REG	TRS;
-};
-
 void CANSetup();
 char FillCAN(unsigned int Mbox);
-void SendCAN(unsigned int Mbox);
 void FillCANData();
 void FillSendCAN(unsigned int Mbox);
 void ClearMailBoxes();
@@ -32,9 +17,7 @@ void BUS_OFF();
 
 //todo USER: DEFINE IDs for all output
 //           DEFINE mailboxes for all output except heartbeat and command
-#define COMMAND_ID 		0x1
-#define HEARTBEAT_ID 	0x0
-
+//			 Mailboxes and ID's 0 or 1 are reserved for system use.
 #define ADC_ID 			0x2
 #define ADC_BOX 		2
 #define ADC_TRS			TRS2

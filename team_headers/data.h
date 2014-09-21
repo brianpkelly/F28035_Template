@@ -9,10 +9,10 @@
 #define DATA_H_
 
 
-typedef struct DATA
+typedef struct USER_DATA
 {
-  unsigned long adc;
-  char gp_button;
-} data_struct;
+	unsigned long adc;
+	char gp_button;
+} user_data_struct;
 
 #endif /* DATA_H_ */
