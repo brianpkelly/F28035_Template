@@ -67,22 +67,6 @@ char FillCAN(unsigned int Mbox)
 	}
 }
 
-//todo SEAN: Determine if setting the ops flag can be in a system function. What if user removes that op?
-//Another issue is if you put everything up until the stopWatchComplete into a system function, can_watch
-//is no longer available
-void SendCAN(unsigned int Mbox)
-{
-	// Check for bus off
-	CopyMCToShadow(&ECanaShadow);
-	//ECanaShadow.CANMC.all = ECanaRegs.CANMC.all;
-	CheckBusOff();
-	CreateMask(Mbox);
-
-	BeginTransmission();
-	CheckForFlags();
-}
-
-
 void FillCANData()
 {
 	//todo USER: use FillCAN to put data into correct mailboxes

@@ -10,7 +10,6 @@
 
 void CANSetup();
 char FillCAN(unsigned int Mbox);
-void SendCAN(unsigned int Mbox);
 void FillCANData();
 void FillSendCAN(unsigned int Mbox);
 void ClearMailBoxes();
