@@ -11,6 +11,23 @@
 user_ops_struct ops_temp;
 user_data_struct data_temp;
 
+Uint16 SOC0CHSEL;
+Uint16 SOC1CHSEL;
+Uint16 SOC2CHSEL;
+Uint16 SOC3CHSEL;
+Uint16 SOC4CHSEL;
+Uint16 SOC5CHSEL;
+Uint16 SOC6CHSEL;
+Uint16 SOC7CHSEL;
+Uint16 SOC8CHSEL;
+Uint16 SOC9CHSEL;
+Uint16 SOC10CHSEL;
+Uint16 SOC11CHSEL;
+Uint16 SOC12CHSEL;
+Uint16 SOC13CHSEL;
+Uint16 SOC14CHSEL;
+Uint16 SOC15CHSEL;
+
 void SensorCov()
 {
 	SensorCovInit(4);
@@ -28,6 +45,8 @@ void SensorCovInit()
 {
 	//todo USER: SensorCovInit()
 	SystemSensorInit();
+
+	//adc_cal_watch = StartStopWatch(100); //Half a second?
 }
 
 
@@ -35,7 +54,6 @@ void SensorCovMeasure()
 {
 	SensorCovSystemInit();
 
-	readADC();
 	//todo USER: Sensor Conversion
 	//update data_temp and ops_temp
 	//use stopwatch to catch timeouts
