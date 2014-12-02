@@ -12,7 +12,7 @@ Uint16 MesgID = 5;
 int main(void)
 {
 	StartUp();
-	BootISRSetup();
+	//BootISRSetup();
 	PowerDownISRSetup();
 	sys_ops.State = STATE_INIT;
 	while(1)
@@ -42,7 +42,8 @@ void NextState(Uint16 MesgID)
 	}
 }
 
-
+// Boot button removed in MCN v2.0
+/*
 void BootISRSetup()
 {
 	   EALLOW;
@@ -68,6 +69,7 @@ void BootISRSetup()
 	   IFR &= ~M_INT1;
 	   IER |= M_INT1;
 }
+*/
 
 void StartUp()
 {
@@ -101,6 +103,8 @@ void StartUp()
 
 
 // INT1.4
+// No longer use in MCN V2.0 since there is no longer a boot button
+/*
 __interrupt void  XINT1_ISR(void)
 {
 	// Insert ISR Code here
@@ -108,5 +112,6 @@ __interrupt void  XINT1_ISR(void)
 	// To receive more interrupts from this PIE group, acknowledge this interrupt
 	PieCtrlRegs.PIEACK.all = PIEACK_GROUP1;
 }
+*/
 
 
