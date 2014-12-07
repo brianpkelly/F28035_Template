@@ -7,6 +7,7 @@
 
 #include "all.h"
 
+extern DSPfilter A0filter;
 
 user_ops_struct ops_temp;
 user_data_struct data_temp;
@@ -35,7 +36,7 @@ void SensorCovMeasure()
 {
 	SensorCovSystemInit();
 
-	readADC();
+	//readADC();
 	//todo USER: Sensor Conversion
 	//update data_temp and ops_temp
 	//use stopwatch to catch timeouts
