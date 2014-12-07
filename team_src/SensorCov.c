@@ -7,7 +7,7 @@
 
 #include "all.h"
 
-
+extern DSPfilter A0filter;
 user_ops_struct ops_temp;
 user_data_struct data_temp;
 
