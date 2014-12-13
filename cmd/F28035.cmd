@@ -132,10 +132,10 @@ SECTIONS
    csm_rsvd            : > CSM_RSVD    PAGE = 0
 
    /* Allocate uninitalized data sections: */
-   .stack              : > RAMM0       PAGE = 1
+   .stack              : > RAML3       PAGE = 1
    .ebss               : > RAML2       PAGE = 1
    .bss                : > RAML2       PAGE = 1
-   .sysmem             : > RAML3       PAGE = 1
+   .sysmem             : > RAMM0       PAGE = 1
 
 
    .bootloader_boot : {
